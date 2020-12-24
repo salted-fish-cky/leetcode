@@ -14,6 +14,11 @@
 
 package com.learn.leetcode;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Description：
  *
@@ -27,6 +32,157 @@ public class LeetCode {
     System.out.println(longestPalindrome2("baa"));
   }
 
+  /**
+   *给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。
+   *
+   * 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素不能使用两遍
+   *
+   * @param nums
+   * @param target
+   * @return
+   */
+  public static int[] twoSum(int[] nums, int target) {
+    int[] result = new int[2];
+    for (int i = 0; i < nums.length - 1; i++) {
+      for (int j = i + 1; j < nums.length; j++) {
+        if (i == j) {
+          continue;
+        }
+        if (nums[i] + nums[j] == target) {
+          if (i < j) {
+            result[0] = i;
+            result[1] = j;
+          } else {
+            result[0] = j;
+            result[1] = i;
+          }
+          break;
+        }
+      }
+    }
+    return result;
+  }
+
+  public static int[] twoSum2(int[] nums, int target) {
+    int[] result = new int[2];
+    Map<Integer, Integer> map = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+      map.put(nums[i], i);
+    }
+    for (int i = 0; i < nums.length; i++) {
+      int resultNum = target - nums[i];
+      Integer b = map.get(resultNum);
+      if (b != null) {
+        if (b == i) {
+          continue;
+        }
+        if (i < map.get(resultNum)) {
+          result[0] = i;
+          result[1] = b;
+        } else {
+          result[1] = i;
+          result[0] = b;
+        }
+      }
+    }
+    return result;
+  }
+
+  /**
+   * 给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度
+   * @param l1
+   * @param l2
+   * @return
+   */
+  public static ListNode addTwoNumbers2(ListNode l1, ListNode l2) {
+
+    List<Integer> list1 = new ArrayList<>();
+    List<Integer> list2 = new ArrayList<>();
+    for ( ListNode l = l1; l != null; l = l.next) {
+      list1.add(l.val);
+
+    }
+
+    for ( ListNode l = l2; l != null; l = l.next) {
+      list2.add(l.val);
+    }
+    int l1Size = list1.size();
+    int l2Size = list2.size();
+    if ( l1Size > l2Size) {
+      for (int i = 0; i < l1Size - l2Size; i++) {
+        list2.add(0);
+      }
+    } else if (list1.size() < list2.size()) {
+      for (int i = 0; i < l2Size - l1Size; i++) {
+        list1.add(0);
+      }
+    }
+    boolean flag = false;
+    ListNode l = null;
+    ListNode temp = null;
+    l1Size = list1.size();
+    for (int i = 0; i < l1Size; i++) {
+      Integer result = 0;
+      Integer cal = 0;
+      if (flag) {
+        cal = list1.get(i) + list2.get(i) + 1;
+      } else {
+        cal = list1.get(i) + list2.get(i);
+      }
+
+      if (cal >= 10) {
+        flag = true;
+        result = cal % 10;
+      } else {
+        flag = false;
+        result = cal;
+      }
+      if (i == 0) {
+        ListNode node = new ListNode(result);
+        l = node;
+        temp = node;
+      } else {
+        ListNode node = new ListNode(result);
+        temp.next = node;
+        temp = node;
+      }
+    }
+    if (flag) {
+      ListNode node = new ListNode(1);
+      temp.next = node;
+      temp = node;
+    }
+    return l;
+
+  }
+
+  public ListNode addTwoNumbers3(ListNode l1, ListNode l2) {
+
+    int temp = 0;
+    ListNode l3 = new ListNode(0);
+    ListNode p = l3;
+    while(l1 != null || l2 != null || temp != 0){
+      int l1Val = l1 != null ? l1.val : 0;
+      int l2Val = l2 != null ? l2.val : 0;
+      int sumVal = l1Val + l2Val + temp;
+      temp = sumVal/10;
+      p.next = new ListNode(sumVal%10);
+      p = p.next;
+      if(l1 != null) l1 = l1.next;
+      if(l2 != null) l2 = l2.next;
+    }
+    return l3.next;
+  }
+
+  /**
+   * 给定两个大小为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。请你找出并返回这两个正序数组的中位数。
+   *
+   * 进阶：你能设计一个时间复杂度为 O(log (m+n)) 的算法解决此问题吗？
+   *
+   * @param nums1
+   * @param nums2
+   * @return
+   */
   public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
     int mid = (nums1.length + nums2.length) / 2 + 1;
     int nn = mid;
@@ -140,6 +296,11 @@ public class LeetCode {
     }
   }
 
+  /**
+   * 给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。
+   * @param s
+   * @return
+   */
   public static String longestPalindrome(String s) {
     if (s.length() <= 1) {
       return s;
@@ -198,9 +359,7 @@ public class LeetCode {
     }
     return result;
   }
-
-
-
+  
   public static String longestPalindrome2(String s) {
     if (s.length() <= 1) {
       return s;
@@ -253,6 +412,14 @@ public class LeetCode {
       return true;
     }
     return false;
+  }
+
+  static class ListNode {
+    int val;
+    ListNode next;
+    ListNode() {}
+    ListNode(int val) { this.val = val; }
+    ListNode(int val, ListNode next) { this.val = val; this.next = next; }
   }
 
 
