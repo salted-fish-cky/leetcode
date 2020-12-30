@@ -29,7 +29,8 @@ public class LeetCode {
 
   public static void main(String[] args) {
 //    System.out.println(findMedianSortedArrays(new int[]{1,3,4,5}, new int[]{2}));
-    System.out.println(longestPalindrome2("baa"));
+//    System.out.println(longestPalindrome2("baa"));
+    System.out.println(convertNode(new ListNode(1, new ListNode(2, new ListNode(3, null)))));
   }
 
   /**
@@ -359,7 +360,7 @@ public class LeetCode {
     }
     return result;
   }
-  
+
   public static String longestPalindrome2(String s) {
     if (s.length() <= 1) {
       return s;
@@ -394,14 +395,34 @@ public class LeetCode {
         }
       }
 
-
-
     }
 
     if (result.equals("")) {
       result = String.valueOf(chars[0]);
     }
     return result;
+  }
+
+  /**
+   * 链表反转
+   * @param l
+   * @return
+   */
+  public static ListNode convertNode(ListNode l) {
+    return convertNode(l, null);
+  }
+  private static ListNode convertNode(ListNode l, ListNode node) {
+
+    if (l != null) {
+      ListNode next = l.next;
+      l.next = node;
+      node = l;
+      if (next == null) {
+        return l;
+      }
+      return convertNode(next, node);
+    }
+    return null;
   }
 
   private static boolean isEqual(char[] chars, int left, int right) {
@@ -420,7 +441,13 @@ public class LeetCode {
     ListNode() {}
     ListNode(int val) { this.val = val; }
     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+
+    @Override
+    public String toString() {
+      return "ListNode{" +
+              "val=" + val +
+              ", next=" + next +
+              '}';
+    }
   }
-
-
 }
