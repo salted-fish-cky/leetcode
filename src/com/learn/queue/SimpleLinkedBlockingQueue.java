@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import org.w3c.dom.Node;
 
 /**
  * Description：链表阻塞队列
@@ -27,7 +26,7 @@ import org.w3c.dom.Node;
  * @author caokeyu
  * @since 2020/12/31
  */
-public class TestLinkedBlockingQueue<E> implements TestBlockingQueue<E> {
+public class SimpleLinkedBlockingQueue<E> implements SimpleBlockingQueue<E> {
 
   /**
    * 队列总大小
@@ -63,7 +62,7 @@ public class TestLinkedBlockingQueue<E> implements TestBlockingQueue<E> {
 
   private final Condition takeCondition = takeLock.newCondition();
 
-  public TestLinkedBlockingQueue(Integer capacity) {
+  public SimpleLinkedBlockingQueue(Integer capacity) {
     if (capacity <= 0) {
       throw new RuntimeException("容量设置错误");
     }
@@ -71,7 +70,7 @@ public class TestLinkedBlockingQueue<E> implements TestBlockingQueue<E> {
     header = tail = new Node<>(null, null);
   }
 
-  public TestLinkedBlockingQueue() {
+  public SimpleLinkedBlockingQueue() {
     this(Integer.MAX_VALUE);
   }
 

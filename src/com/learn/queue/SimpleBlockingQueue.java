@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @author caokeyu
  * @since 2020/12/31 
  */
-public interface TestBlockingQueue<E> {
+public interface SimpleBlockingQueue<E> {
 
   E take() throws InterruptedException;
 

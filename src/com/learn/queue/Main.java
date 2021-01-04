@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
   static boolean isRun = true;
-  static TestBlockingQueue<String> queue = new TestLinkedBlockingQueue(128);
+  static SimpleBlockingQueue<String> queue = new SimpleLinkedBlockingQueue(128);
   static BlockingQueue<String> blockingQueue = new LinkedBlockingQueue(128);
   public static void main(String[] args) throws InterruptedException {
     Runnable runnable1 = () -> {
