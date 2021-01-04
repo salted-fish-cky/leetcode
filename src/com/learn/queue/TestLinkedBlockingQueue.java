@@ -230,4 +230,9 @@ public class TestLinkedBlockingQueue<E> implements TestBlockingQueue<E> {
     }
     return e;
   }
+
+  @Override
+  public int size() {
+    return count.get();
+  }
 }

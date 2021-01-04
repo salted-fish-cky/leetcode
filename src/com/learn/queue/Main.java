@@ -16,6 +16,7 @@ package com.learn.queue;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Description：
@@ -33,26 +34,28 @@ public class Main {
       try {
         for (int i = 0; i < 1000; i++) {
           System.out.println("生产数据数据 ：" + (i + 1));
-          queue.put(i + 1 + "");
+          queue.offer(i + 1 + "", 1, TimeUnit.SECONDS);
         }
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
     };
-    new Thread(runnable1).start();
-
+    Thread thread1 = new Thread(runnable1);
+    thread1.start();
     Runnable runnable2 = () -> {
       try {
-        while (isRun) {
-          String take = queue.take();
+        while (!Thread.currentThread().isInterrupted()) {
+          String take = queue.poll(1, TimeUnit.SECONDS);
           System.out.println("消费数据 ：" + take);
         }
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
     };
-    new Thread(runnable2).start();
-    Thread.sleep(1000);
-    isRun = false;
+    Thread thread2 = new Thread(runnable2);
+    thread2.start();
+    Thread.sleep(2000);
+    thread1.interrupt();
+    thread2.interrupt();
   }
 }

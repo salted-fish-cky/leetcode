@@ -27,4 +27,6 @@ public interface TestBlockingQueue<E> {
   boolean offer(E e, long timeOut, TimeUnit unit) throws InterruptedException;
 
   E poll(long timeOut, TimeUnit unit) throws InterruptedException;
+
+  int size();
 }
