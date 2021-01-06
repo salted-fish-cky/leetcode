@@ -30,5 +30,7 @@ public interface SimpleList<E> {
 
   int size();
 
-  Iterator iterator();
+  Iterator<E> iterator();
+
+  boolean contain(Object o);
 }

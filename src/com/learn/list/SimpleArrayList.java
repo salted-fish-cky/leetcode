@@ -51,7 +51,8 @@ public class SimpleArrayList<E> implements SimpleList<E> {
   public void add(E e) {
     int index = size + 1;
     resize(index);
-    elementData[++size] = e;
+    elementData[size] = e;
+    size++;
     modeCount++;
   }
 
@@ -96,6 +97,34 @@ public class SimpleArrayList<E> implements SimpleList<E> {
     return new Itr();
   }
 
+  @Override
+  public boolean contain(Object o) {
+    return indexOf(o, 0, size()) >= 0;
+  }
+
+  private int indexOf(Object o, int index, int fen) {
+    int find = -1;
+    if (o == null) {
+      for (int i = 0; i < fen; i++) {
+        if (elementData[i] == null) {
+          if (find++ == index) {
+            return i;
+          }
+        }
+      }
+    } else {
+      for (int i = 0; i < fen; i++) {
+        if (o.equals(elementData[i])) {
+          if (++find == index) {
+            return i;
+          }
+        }
+      }
+    }
+    return -1;
+  }
+
+
   private E getElement(int i) {
     return (E)elementData[i];
   }
@@ -131,12 +160,14 @@ public class SimpleArrayList<E> implements SimpleList<E> {
 
     @Override
     public boolean hasNext() {
-      return cursor++ != size;
+      return cursor != size;
     }
 
     @Override
     public E next() {
-      return getElement(cursor);
+      E element = getElement(cursor);
+      cursor++;
+      return element;
     }
   }
 }

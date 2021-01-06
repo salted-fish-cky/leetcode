@@ -24,14 +24,22 @@ import java.util.Iterator;
  */
 public class Main {
 
-  public static void main(String[] args) {
-    SimpleList<String> list = new SimpleArrayList<>();
-    list.add("dfdgd");
-    list.add("cky");
-    list.remove(1);
-    Iterator iterator = list.iterator();
+  public static void main(String[] args) throws InterruptedException {
+    SimpleList<Integer> list = new SimpleCopyOnWriteArrayList<>();
+
+    for (int i = 0; i < 100; i++) {
+      final int value = i + 1;
+      new Thread(() -> {list.add(value);}).start();
+    }
+    while (list.size() != 100) {
+
+    }
+    list.add(0, 1000);
+    System.out.println(list.contain(101));
+    Iterator<Integer> iterator = list.iterator();
     while (iterator.hasNext()) {
-      System.out.println(iterator.next());
+      Integer next = iterator.next();
+      System.out.println(next);
     }
   }
 }
