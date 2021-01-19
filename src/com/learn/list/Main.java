@@ -25,17 +25,14 @@ import java.util.Iterator;
 public class Main {
 
   public static void main(String[] args) throws InterruptedException {
-    SimpleList<Integer> list = new SimpleCopyOnWriteArrayList<>();
+    ILinkedList<Integer> list = new SimpleLinkedList<>();
 
     for (int i = 0; i < 100; i++) {
       final int value = i + 1;
-      new Thread(() -> {list.add(value);}).start();
+      list.add(value);
     }
-    while (list.size() != 100) {
-
-    }
-    list.add(0, 1000);
-    System.out.println(list.contain(101));
+    list.add(50, 10000);
+    list.remove(55);
     Iterator<Integer> iterator = list.iterator();
     while (iterator.hasNext()) {
       Integer next = iterator.next();

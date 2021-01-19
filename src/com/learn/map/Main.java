@@ -26,12 +26,14 @@ import java.util.Map;
 public class Main {
 
   public static void main(String[] args) {
-    Map<String, String> map = new SimpleHashMap<>(4);
+    Map<String, String> map = new HashMap<>(4);
     map.put("qq", "bb");
     map.put("aa", "aa");
     map.put("bb", "bb");
     map.put("qq", "zz");
-    for (SimpleHashMap.Entry<String, String> entry: map.entrySet()) {
+    Map<String, String> m = new SimpleHashMap<>(4);
+    m.putAll(map);
+    for (SimpleHashMap.Entry<String, String> entry: m.entrySet()) {
       System.out.println(entry.getKey() + ":" + entry.getValue());
     }
   }
