@@ -15,7 +15,9 @@
 package com.learn.leetcode;
 
 import java.util.Random;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
@@ -263,4 +265,142 @@ public class LeetCodeConcurrent {
     }
   }
 
+  /**
+   * H2O生成
+   */
+  class H2O {
+
+    Semaphore o = new Semaphore(1);
+    Semaphore h = new Semaphore(2);
+    CyclicBarrier cyclicBarrier = new CyclicBarrier(3);
+
+    public H2O() {
+
+    }
+
+    public void hydrogen(Runnable releaseHydrogen) throws InterruptedException {
+
+      // releaseHydrogen.run() outputs "H". Do not change or remove this line.
+      execute(h, releaseHydrogen);
+    }
+
+    public void oxygen(Runnable releaseOxygen) throws InterruptedException {
+
+      // releaseOxygen.run() outputs "O". Do not change or remove this line.
+      execute(o, releaseOxygen);
+    }
+
+    private void execute(Semaphore semaphore, Runnable runnable) throws InterruptedException {
+      semaphore.acquire();
+      try {
+        cyclicBarrier.await();
+      } catch (BrokenBarrierException e) {
+        e.printStackTrace();
+      }
+      runnable.run();
+      semaphore.release();
+    }
+  }
+
+
+  /**
+   * 交替打印字符串
+   */
+  static class FizzBuzz {
+
+    private volatile int count = 1;
+    private Semaphore number = new Semaphore(0);
+    private Semaphore fizz = new Semaphore(0);
+    private Semaphore buzz = new Semaphore(0);
+    private Semaphore fizzbuzz = new Semaphore(0);
+
+    private int n;
+
+    public static void main(String[] args) {
+      FizzBuzz fizzBuzz = new FizzBuzz(15);
+      new Thread(() -> {
+        try {
+          fizzBuzz.fizz(() -> System.out.println("fizz"));
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }).start();
+
+      new Thread(() -> {
+        try {
+          fizzBuzz.fizzbuzz(() -> System.out.println("fizzbuzz"));
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }).start();
+
+      new Thread(() -> {
+        try {
+          fizzBuzz.buzz(() -> System.out.println("buzz"));
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }).start();
+
+      new Thread(() -> {
+        try {
+          fizzBuzz.number(e -> System.out.println(e));
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }).start();
+    }
+
+    public FizzBuzz(int n) {
+      this.n = n;
+    }
+
+    // printFizz.run() outputs "fizz".
+    public void fizz(Runnable printFizz) throws InterruptedException {
+      execute(fizz, printFizz);
+    }
+
+    // printBuzz.run() outputs "buzz".
+    public void buzz(Runnable printBuzz) throws InterruptedException {
+      execute(buzz, printBuzz);
+    }
+
+    // printFizzBuzz.run() outputs "fizzbuzz".
+    public void fizzbuzz(Runnable printFizzBuzz) throws InterruptedException {
+      execute(fizzbuzz, printFizzBuzz);
+    }
+
+    // printNumber.accept(x) outputs "x", where x is an integer.
+    public void number(IntConsumer printNumber) throws InterruptedException {
+      while (count <= n) {
+        if (count % 3 == 0 && count % 5 == 0) {
+          fizzbuzz.release();
+          number.acquire();
+        } else if (count % 3 == 0) {
+          fizz.release();
+          number.acquire();
+        } else if (count % 5 == 0) {
+          buzz.release();
+          number.acquire();
+        } else {
+          printNumber.accept(count);
+        }
+        count++;
+      }
+      fizzbuzz.release();
+      fizz.release();
+      buzz.release();
+    }
+
+    private void execute(Semaphore semaphore, Runnable runnable) throws InterruptedException {
+      while (count <= n) {
+        semaphore.acquire();
+        if (count > n) {
+          break;
+        }
+        runnable.run();
+        number.release();
+      }
+    }
+  }
 }
