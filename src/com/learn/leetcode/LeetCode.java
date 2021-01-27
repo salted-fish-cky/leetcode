@@ -30,17 +30,15 @@ public class LeetCode {
   public static void main(String[] args) {
 //    System.out.println(findMedianSortedArrays(new int[]{1,3,4,5}, new int[]{2}));
 //    System.out.println(longestPalindrome2("baa"));
-    System.out.println(convertNode(new ListNode(1, new ListNode(2, new ListNode(3, null)))));
+//    System.out.println(convertNode(new ListNode(1, new ListNode(2, new ListNode(3, null)))));
+//    System.out.println(reverse(-2147483647));
+    System.out.println(myAtoi(" 2147483649 aaa"));
   }
 
   /**
-   *给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。
+   * 给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。
    *
    * 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素不能使用两遍
-   *
-   * @param nums
-   * @param target
-   * @return
    */
   public static int[] twoSum(int[] nums, int target) {
     int[] result = new int[2];
@@ -91,25 +89,22 @@ public class LeetCode {
 
   /**
    * 给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度
-   * @param l1
-   * @param l2
-   * @return
    */
   public static ListNode addTwoNumbers2(ListNode l1, ListNode l2) {
 
     List<Integer> list1 = new ArrayList<>();
     List<Integer> list2 = new ArrayList<>();
-    for ( ListNode l = l1; l != null; l = l.next) {
+    for (ListNode l = l1; l != null; l = l.next) {
       list1.add(l.val);
 
     }
 
-    for ( ListNode l = l2; l != null; l = l.next) {
+    for (ListNode l = l2; l != null; l = l.next) {
       list2.add(l.val);
     }
     int l1Size = list1.size();
     int l2Size = list2.size();
-    if ( l1Size > l2Size) {
+    if (l1Size > l2Size) {
       for (int i = 0; i < l1Size - l2Size; i++) {
         list2.add(0);
       }
@@ -162,15 +157,15 @@ public class LeetCode {
     int temp = 0;
     ListNode l3 = new ListNode(0);
     ListNode p = l3;
-    while(l1 != null || l2 != null || temp != 0){
+    while (l1 != null || l2 != null || temp != 0) {
       int l1Val = l1 != null ? l1.val : 0;
       int l2Val = l2 != null ? l2.val : 0;
       int sumVal = l1Val + l2Val + temp;
-      temp = sumVal/10;
-      p.next = new ListNode(sumVal%10);
+      temp = sumVal / 10;
+      p.next = new ListNode(sumVal % 10);
       p = p.next;
-      if(l1 != null) l1 = l1.next;
-      if(l2 != null) l2 = l2.next;
+      if (l1 != null) l1 = l1.next;
+      if (l2 != null) l2 = l2.next;
     }
     return l3.next;
   }
@@ -179,10 +174,6 @@ public class LeetCode {
    * 给定两个大小为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。请你找出并返回这两个正序数组的中位数。
    *
    * 进阶：你能设计一个时间复杂度为 O(log (m+n)) 的算法解决此问题吗？
-   *
-   * @param nums1
-   * @param nums2
-   * @return
    */
   public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
     int mid = (nums1.length + nums2.length) / 2 + 1;
@@ -198,7 +189,7 @@ public class LeetCode {
     int offset1 = 0, offset2 = 0;
     while (true) {
       int m = mid / 2 - 1;
-      int m1 = m > 0 ? m + offset1 : 0, m2 = m > 0 ? m + offset2: 0;
+      int m1 = m > 0 ? m + offset1 : 0, m2 = m > 0 ? m + offset2 : 0;
       if (nums1.length <= m1) {
         if ((nums1.length + nums2.length) % 2 == 0) {
           return (nums2[nn - nums1.length - 1] + nums2[nn - nums1.length - 2]) / 2.0;
@@ -225,7 +216,7 @@ public class LeetCode {
       mid = mid - (mid / 2);
       if (mid == 1) {
         if ((nums1.length + nums2.length) % 2 == 0) {
-          return (nums1[m1] +nums2[m2]) / 2.0;
+          return (nums1[m1] + nums2[m2]) / 2.0;
         } else {
           if (nums1[m1] < nums2[m2]) {
             return nums1[m2];
@@ -234,7 +225,6 @@ public class LeetCode {
         }
       }
     }
-
 
 
   }
@@ -299,8 +289,6 @@ public class LeetCode {
 
   /**
    * 给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。
-   * @param s
-   * @return
    */
   public static String longestPalindrome(String s) {
     if (s.length() <= 1) {
@@ -332,7 +320,7 @@ public class LeetCode {
       } else {
         if (chars[left] == c) {
           isFind = true;
-          if(maxLen < (right - left)) {
+          if (maxLen < (right - left)) {
             result = s.substring(left, right + 1);
             maxLen = right - left;
           }
@@ -373,7 +361,7 @@ public class LeetCode {
     String result = "";
     while (right >= left) {
 
-      if(isEqual(chars, left, right)) {
+      if (isEqual(chars, left, right)) {
         if (maxLen < right - left + 1) {
           maxLen = right - left + 1;
           result = s.substring(left, right + 1);
@@ -384,7 +372,6 @@ public class LeetCode {
       } else {
         right--;
       }
-
 
 
       if (maxLen > right - left + 1) {
@@ -405,12 +392,85 @@ public class LeetCode {
 
   /**
    * 链表反转
-   * @param l
-   * @return
    */
   public static ListNode convertNode(ListNode l) {
     return convertNode(l, null);
   }
+
+  /**
+   * 整数反转
+   */
+  public static int reverse(int x) {
+    boolean flag = true;
+    if (x == Integer.MIN_VALUE) {
+      return 0;
+    }
+    if (x < 0) {
+      x = x * -1;
+      flag = false;
+    }
+    char[] chars = String.valueOf(x).toCharArray();
+    int result = 0;
+    for (int i = chars.length - 1; i >= 0; i--) {
+      result += (chars[i] - 48) * Math.pow(10, i);
+    }
+    if (result == Integer.MAX_VALUE) {
+      return 0;
+    }
+    if (flag) {
+      return result;
+    }
+    return result * -1;
+  }
+
+  /**
+   * 字符串转换整数 (atoi)
+   * @param s
+   * @return
+   */
+  public static int myAtoi(String s) {
+    int result = 0;
+    if (s.equals("")) {
+      return result;
+    }
+    boolean isStart = false;
+    int startIndex = 0, endIndex = 0, a = 1;
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      if (isStart) {
+        if (c >= 48 && c <= 57) {
+          endIndex = i;
+        } else {
+          break;
+        }
+      } else {
+        if (c == 45) {
+          isStart = true;
+          a = -1;
+          startIndex = i + 1;
+        } else if (c == 43) {
+          isStart = true;
+          a = 1;
+          startIndex = i + 1;
+        }else if (c>= 48 && c <= 57) {
+          isStart = true;
+          startIndex = i;
+          endIndex = i;
+        } else if (c != 32) {
+          break;
+        }
+      }
+    }
+    for (int i = startIndex; i <= endIndex; i++) {
+      char c;
+      if ((c = s.charAt(i)) < 48 || c > 57) {
+        break;
+      }
+      result += (c - 48) * Math.pow(10, endIndex - i) * a;
+    }
+    return result;
+  }
+
   private static ListNode convertNode(ListNode l, ListNode node) {
 
     if (l != null) {
@@ -438,9 +498,18 @@ public class LeetCode {
   static class ListNode {
     int val;
     ListNode next;
-    ListNode() {}
-    ListNode(int val) { this.val = val; }
-    ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+
+    ListNode() {
+    }
+
+    ListNode(int val) {
+      this.val = val;
+    }
+
+    ListNode(int val, ListNode next) {
+      this.val = val;
+      this.next = next;
+    }
 
     @Override
     public String toString() {
