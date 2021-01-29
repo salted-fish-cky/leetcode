@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * Description：
@@ -644,6 +645,91 @@ public class LeetCode {
     }
     return list;
   }
+
+  /**
+   * 最接近的三数之和
+   * @param nums
+   * @param target
+   * @return
+   */
+  public int threeSumClosest(int[] nums, int target) {
+    Arrays.sort(nums);
+    int abs = Integer.MAX_VALUE, right = nums.length - 1, result = 0;
+    boolean isBreak = false;
+    for (int i = 0, left = i + 1; i < nums.length; left = ++i + 1, right = nums.length - 1) {
+      while (right > left) {
+        int temp = 0, tempAbs = 0;
+        if ((temp = nums[i] + nums[left] + nums[right]) == target) {
+          result = temp;
+          isBreak = true;
+          break;
+        }
+        if (target > temp) {
+          left++;
+        } else {
+          right--;
+        }
+        if ((tempAbs = Math.abs(target - temp)) < abs) {
+          abs = tempAbs;
+          result = temp;
+        }
+      }
+      if (isBreak) {
+        break;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * 有效的括号
+   * @param s
+   * @return
+   */
+  public boolean isValid(String s) {
+    if ((s.length() & 1) != 0) {
+      return false;
+    }
+    Stack<Character> stack=new Stack<>();
+    for(char c:s.toCharArray()){
+      if(c=='('){
+        stack.push(')');
+      } else if(c=='{') {
+        stack.push('}');
+      } else if(c=='[') {
+        stack.push(']');
+      } else if(stack.empty()||c!=stack.pop()) {
+        return false;
+      }
+    }
+    if(stack.empty()) {
+      return true;
+    }
+    return false;
+
+  }
+
+  /**
+   * 合并两个有序链表
+   * @param l1
+   * @param l2
+   * @return
+   */
+  public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+    if (l1 == null) {
+      return l2;
+    } else if (l2 == null) {
+      return l1;
+    } else if (l1.val < l2.val) {
+      l1.next = mergeTwoLists(l1.next, l2);
+      return l1;
+    } else {
+      l2.next = mergeTwoLists(l1, l2.next);
+      return l2;
+    }
+
+  }
+
 
   private static ListNode convertNode(ListNode l, ListNode node) {
 
