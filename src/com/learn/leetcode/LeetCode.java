@@ -15,6 +15,7 @@
 package com.learn.leetcode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,9 @@ public class LeetCode {
 //    System.out.println(longestPalindrome2("baa"));
 //    System.out.println(convertNode(new ListNode(1, new ListNode(2, new ListNode(3, null)))));
 //    System.out.println(reverse(-2147483647));
-    System.out.println(myAtoi(" 2147483649 aaa"));
+//    System.out.println(myAtoi(" 2147483649 aaa"));
+//    System.out.println(isPalindrome(10000));
+    System.out.println(threeSum(new int[] {-1,0,1,2,-1,-4}));
   }
 
   /**
@@ -469,6 +472,177 @@ public class LeetCode {
       result += (c - 48) * Math.pow(10, endIndex - i) * a;
     }
     return result;
+  }
+
+  /**
+   * 回文数
+   * @param x
+   * @return
+   */
+  public static boolean isPalindrome(int x) {
+    if (x < 0) {
+      return false;
+    }
+    String s = String.valueOf(x);
+    boolean isPalindrome = true;
+    int count = s.length();
+    for (int i = 0, j = count, temp = x; i <= (count - 1) / 2; i++, temp = temp / 10) {
+      if (x / (int)(Math.pow(10, --j)) % 10 != temp % 10) {
+        isPalindrome = false;
+        break;
+      }
+    }
+    return isPalindrome;
+  }
+
+  /**
+   * 盛最多水的容器
+   * @param height
+   * @return
+   */
+  public int maxArea(int[] height) {
+    int result = 0;
+    if (height.length <= 1) {
+      return result;
+    }
+    int temp = 0;
+    for (int i = 0; i < height.length - 1; i++) {
+      for (int j = i + 1; j < height.length; j++) {
+       result = result > (temp = Math.min(height[i], height[j]) * (j - i)) ? result : temp;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * 整数转罗马数字
+   * @param num
+   * @return
+   */
+  public String intToRoman(int num) {
+    int length = 0;
+    String result = "";
+    while(num != 0) {
+      int value = num % 10;
+      switch (length) {
+        case 0:
+          result = intToRoman("I", "V", "X", value, result);
+          break;
+        case 1:
+          result = intToRoman("X", "L", "C", value, result);
+          break;
+        case 2:
+          result = intToRoman("C", "D", "M", value, result);
+          break;
+        case 3:
+          result = intToRoman("M", "", "", value, result);
+          break;
+          default:
+            break;
+      }
+      num = num / 10;
+      length++;
+    }
+    return result;
+  }
+  private String intToRoman(String arg1, String arg2, String arg3, int value, String result) {
+    switch (value) {
+      case 1:
+        result = arg1 + result;
+        break;
+      case 2:
+        result = arg1 + arg1 + result;
+        break;
+      case 3:
+        result = arg1 + arg1 + arg1 + result;
+        break;
+      case 4:
+        result = arg1 + arg2 + result;
+        break;
+      case 5:
+        result = arg2 + result;
+        break;
+      case 6:
+        result = arg2 + arg1 + result;
+        break;
+      case 7:
+        result = arg2 + arg1 + arg1 + result;
+        break;
+      case 8:
+        result = arg2 + arg1 + arg1 + arg1 + result;
+        break;
+      case 9:
+        result = arg1 + arg3 + result;
+        break;
+    }
+    return result;
+  }
+
+  /**
+   *  最长公共前缀
+   * @param strs
+   * @return
+   */
+  public String longestCommonPrefix(String[] strs) {
+    if (strs.length == 0) {
+      return "";
+    }
+    String s = strs[0];
+    for (String str: strs) {
+      if (str.length() == 0) {
+        return "";
+      }
+      while (s.length() > 0) {
+        if (!str.startsWith(s)) {
+          s = s.substring(0, s.length() - 1);
+        } else {
+          break;
+        }
+      }
+    }
+    return s;
+  }
+
+  /**
+   *  三数之和
+   * @param nums
+   * @return
+   */
+  public static List<List<Integer>> threeSum(int[] nums) {
+    List<List<Integer>> list = new ArrayList<>();
+    if (nums.length < 3) {
+      return list;
+    } else {
+      Arrays.sort(nums);
+      int right = nums.length - 1;
+      for (int i = 0, left = i + 1; i < nums.length; left = ++i + 1, right = nums.length - 1) {
+        if (i > 0 && nums[i - 1] == nums[i]) {
+          continue;
+        }
+        while(right > left) {
+          if (right < nums.length - 1 && nums[right] == nums[right + 1]) {
+            right--;
+            continue;
+          }
+          if (nums[i] + nums[left] + nums[right] > 0) {
+            right--;
+          } else if (nums[i] + nums[left] + nums[right] < 0) {
+            left++;
+          } else {
+            List<Integer> li = new ArrayList<>(3);
+            li.add(nums[i]);
+            li.add(nums[left]);
+            li.add(nums[right]);
+            list.add(li);
+            left++;
+            right--;
+          }
+        }
+      }
+
+
+    }
+    return list;
   }
 
   private static ListNode convertNode(ListNode l, ListNode node) {
