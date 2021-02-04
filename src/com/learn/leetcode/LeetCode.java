@@ -36,7 +36,11 @@ public class LeetCode {
 //    System.out.println(reverse(-2147483647));
 //    System.out.println(myAtoi(" 2147483649 aaa"));
 //    System.out.println(isPalindrome(10000));
-    System.out.println(threeSum(new int[] {-1,0,1,2,-1,-4}));
+//    System.out.println(threeSum(new int[] {-1,0,1,2,-1,-4}));
+//    System.out.println(removeDuplicates(new int[] {1, 2}));
+//    System.out.println(multiply("9", "9"));
+//    System.out.println(maxSubArray(new int[]{-2,1,-3,4,-1,2,1,-5,4}));
+    System.out.println(spiralOrder(new int[][]{{1,2,3}, {4,5,6}, {7,8,9}}));
   }
 
   /**
@@ -728,6 +732,235 @@ public class LeetCode {
       return l2;
     }
 
+  }
+
+  /**
+   * 括号生成
+   * @param n
+   * @return
+   */
+  public List<String> generateParenthesis(int n) {
+    List<String> res = new ArrayList<>();
+    if(n <= 0){
+      return res;
+    }
+    getParenthesis("",n,n, res);
+    return res;
+  }
+
+  private void getParenthesis(String str,int left, int right, List<String> res) {
+    if(left == 0 && right == 0 ){
+      res.add(str);
+      return;
+    }
+    if(left == right){
+      //剩余左右括号数相等，下一个只能用左括号
+      getParenthesis(str+"(",left-1,right, res);
+    }else if(left < right){
+      //剩余左括号小于右括号，下一个可以用左括号也可以用右括号
+      if(left > 0){
+        getParenthesis(str+"(",left-1,right, res);
+      }
+      getParenthesis(str+")",left,right-1, res);
+    }
+  }
+
+  /**
+   * 合并K个升序链表
+   * @param lists
+   * @return
+   */
+  public ListNode mergeKLists(ListNode[] lists) {
+    int length = 0;
+    ListNode result = null;
+    if ((length = lists.length) == 0) {
+      return result;
+    } else {
+      for (int i = 0; i < length; i++) {
+        result = mergeTwoLists(result, lists[i]);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * 删除排序数组中的重复项
+   * @param nums
+   * @return
+   */
+  public static int removeDuplicates(int[] nums) {
+    int length = 0, index = 0;
+    boolean flag = true;
+    for (int i = 0; i < nums.length; i++) {
+      if (i != nums.length - 1 && nums[i] == nums[i + 1]) {
+        if (flag) {
+          nums[index++] = nums[i];
+          length++;
+          flag = false;
+        }
+      } else {
+        if (flag && length++ >= 0) {
+          nums[index++] = nums[i];
+        }
+        flag = true;
+      }
+    }
+    return length;
+  }
+
+  /**
+   * 搜索旋转排序数组
+   * @param nums
+   * @param target
+   * @return
+   */
+  public int search(int[] nums, int target) {
+    if (target < nums[0]) {
+      for (int i = nums.length - 1; i >= 0; i--) {
+        if (target == nums[i]) {
+          return i;
+        } else if (target > nums[i]) {
+          break;
+        }
+      }
+    } else {
+      for (int i = 0; i < nums.length; i++) {
+        if (target == nums[i]) {
+          return i;
+        } else if (target < nums[i]) {
+          break;
+        }
+      }
+    }
+    return -1;
+  }
+
+  /**
+   * 字符串相乘
+   * @param num1
+   * @param num2
+   * @return
+   */
+  public static String multiply(String num1, String num2) {
+    if (num1.equals("0") || num2.equals("0")) {
+      return "0";
+    }
+    int l1 = num1.length(), l2 = num2.length();
+    int resLen, temp = 0;
+    int[] res = new int[resLen = l1 + l2 - 1];
+    for (int i = l1 - 1; i >= 0; i--) {
+      for (int j = l2 - 1; j >= 0; j--) {
+        res[i + j] += (num1.charAt(i) - '0') * (num2.charAt(j) - '0');
+      }
+    }
+
+    String result = "";
+    for (int i = resLen - 1; i >= 0; i--) {
+      if (i == 0) {
+        result = res[i] + temp + result;
+        break;
+      }
+      int a;
+      int num = (a = (res[i] + temp)) % 10;
+      result = num + result;
+      temp = a / 10;
+    }
+    return result;
+  }
+
+  /**
+   * 全排列
+   * @param nums
+   * @return
+   */
+  public List<List<Integer>> permute(int[] nums) {
+    List<List<Integer>> list = new ArrayList<>();
+    int len;
+    boolean[] isUse = new boolean[len = nums.length];
+    List<Integer> l = new ArrayList<>(len);
+    permute(nums, isUse, l, 0, list, len);
+    return list;
+  }
+
+  private void permute(int[] nums,  boolean[] isUse, List<Integer> l, int depin, List<List<Integer>> list, int len) {
+    if (len == depin) {
+      list.add(new ArrayList<>(l));
+    }
+    for (int i = 0; i < len; i++) {
+      if (!isUse[i]) {
+        isUse[i] = true;
+        l.add(nums[i]);
+        permute(nums, isUse, l, depin + 1, list, len);
+        isUse[i] = false;
+        l.remove(l.size() - 1);
+      }
+
+    }
+  }
+
+  /**
+   *最大子序和
+   * @param nums
+   * @return
+   */
+  public static int maxSubArray(int[] nums) {
+    int result1, result2 = 0, result3, result = Integer.MIN_VALUE;
+    for (int i = 0; i < nums.length; i++) {
+      result1 = nums[i];
+      result2 += nums[i];
+      if (result1 > result2) {
+        result2 = result1;
+        result = Math.max(result, result1);
+      } else {
+        result = Math.max(result, result2);
+      }
+
+    }
+    return result;
+  }
+
+  /**
+   *  螺旋矩阵
+   * @param matrix
+   * @return
+   */
+  public static List<Integer> spiralOrder(int[][] matrix) {
+    int m = matrix.length - 1;
+    int n = matrix[0].length - 1;
+    int mStart = 0;
+    int nStart = 0;
+    List<Integer> list = new ArrayList<>(m * n);
+    while(true) {
+      for (int i = nStart; i <= n; i++) {
+        list.add(matrix[mStart][i]);
+      }
+      mStart++;
+      if (mStart > m) {
+        break;
+      }
+      for (int j = mStart; j <= m; j++) {
+        list.add(matrix[j][n]);
+      }
+      n--;
+      if (nStart > n) {
+        break;
+      }
+      for (int i = n; i >= nStart; i--) {
+        list.add(matrix[m][i]);
+      }
+      m--;
+      if (mStart > m) {
+        break;
+      }
+      for (int i = m; i >= mStart; i--) {
+        list.add(matrix[i][nStart]);
+      }
+      nStart++;
+      if (nStart > n) {
+        break;
+      }
+    }
+    return list;
   }
 
 
