@@ -17,6 +17,7 @@ package com.learn.leetcode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -40,7 +41,8 @@ public class LeetCode {
 //    System.out.println(removeDuplicates(new int[] {1, 2}));
 //    System.out.println(multiply("9", "9"));
 //    System.out.println(maxSubArray(new int[]{-2,1,-3,4,-1,2,1,-5,4}));
-    System.out.println(spiralOrder(new int[][]{{1,2,3}, {4,5,6}, {7,8,9}}));
+//    System.out.println(spiralOrder(new int[][]{{1,2,3}, {4,5,6}, {7,8,9}}));
+    System.out.println(rotateRight(new ListNode(1, new ListNode(2, new ListNode(3, null))), 2));
   }
 
   /**
@@ -961,6 +963,84 @@ public class LeetCode {
       }
     }
     return list;
+  }
+
+  /**
+   * 螺旋矩阵 II
+   * @param n
+   * @return
+   */
+  public int[][] generateMatrix(int n) {
+    int[][] result = new int[n][n];
+    int nStart = 0, mStart = 0, nEnd = n - 1, mEnd = nEnd, count = 0;
+    while(true) {
+      for (int i = nStart; i <= nEnd; i++) {
+        result[mStart][i] = ++count;
+      }
+      mStart++;
+      if (mStart > mEnd) {
+        break;
+      }
+      for (int j = mStart; j <= mEnd; j++) {
+        result[j][nEnd] = ++count;
+      }
+      nEnd--;
+      if (nStart > nEnd) {
+        break;
+      }
+      for (int i = nEnd; i >= nStart; i--) {
+        result[mEnd][i] = ++count;
+      }
+      mEnd--;
+      if (mStart > mEnd) {
+        break;
+      }
+      for (int i = mEnd; i >= mStart; i--) {
+        result[i][nStart] = ++count;
+      }
+      nStart++;
+      if (nStart > nEnd) {
+        break;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * 旋转链表
+   * @param head
+   * @param k
+   * @return
+   */
+  public static ListNode rotateRight(ListNode head, int k) {
+    if (head == null) {
+      return null;
+    }
+    if (k == 0) {
+      return head;
+    }
+    List<Integer> l = new LinkedList<>();
+    for (ListNode p = head; p != null; p = p.next) {
+      l.add(p.val);
+    }
+    int count, index, startIndex = k % (count = l.size());
+    if (startIndex == 0) {
+      return head;
+    }
+    int[] result = new int[count];
+    for (int i = 0; i < count; i++) {
+      if ((index = i + startIndex) < count) {
+        result[index] = l.get(i);
+      } else {
+        result[index - count] = l.get(i);
+      }
+    }
+    count = 0;
+    for (ListNode p = head; p != null; p = p.next) {
+      p.val = result[count];
+      count++;
+    }
+    return head;
   }
 
 
