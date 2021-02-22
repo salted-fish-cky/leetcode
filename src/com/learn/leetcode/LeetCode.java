@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import org.w3c.dom.Node;
 
 /**
  * Description：
@@ -42,7 +43,20 @@ public class LeetCode {
 //    System.out.println(multiply("9", "9"));
 //    System.out.println(maxSubArray(new int[]{-2,1,-3,4,-1,2,1,-5,4}));
 //    System.out.println(spiralOrder(new int[][]{{1,2,3}, {4,5,6}, {7,8,9}}));
-    System.out.println(rotateRight(new ListNode(1, new ListNode(2, new ListNode(3, null))), 2));
+//    System.out.println(rotateRight(new ListNode(1, new ListNode(2, new ListNode(3, null))), 2));
+    LRUCache lruCache = new LRUCache(2);
+    lruCache.put(2, 1);
+    System.out.println(lruCache.toString());
+    lruCache.put(1, 1);
+    System.out.println(lruCache.toString());
+    lruCache.put(2, 3);
+    System.out.println(lruCache.toString());
+    lruCache.put(4, 1);
+    System.out.println(lruCache.toString());
+    lruCache.get(1);
+    System.out.println(lruCache.toString());
+    lruCache.get(2);
+    System.out.println(lruCache.toString());
   }
 
   /**
@@ -1043,6 +1057,18 @@ public class LeetCode {
     return head;
   }
 
+  /**
+   * 数组中的第K个最大元素
+   * @param nums
+   * @param k
+   * @return
+   */
+  public int findKthLargest(int[] nums, int k) {
+    Arrays.sort(nums);
+    int result = 0;
+    return nums[nums.length - k];
+  }
+
 
   private static ListNode convertNode(ListNode l, ListNode node) {
 
@@ -1067,6 +1093,123 @@ public class LeetCode {
     }
     return false;
   }
+
+  /**
+   * LRU 缓存机制
+   */
+  static class LRUCache {
+
+    private Node[] element = null;
+    private int capacity = 10;
+    private int size = 0;
+    private LinkedList<Integer> keyList = null;
+    public LRUCache(int capacity) {
+      if (capacity > 0) {
+        this.capacity = capacity;
+      }
+      element = new Node[this.capacity];
+      keyList = new LinkedList<>();
+    }
+
+    public int get(int key) {
+      Node n = element[key % capacity];
+      int value = -1;
+      if (n != null) {
+        for (Node node = n; node != null; node = node.next) {
+          if (key == node.key) {
+            value = node.value;
+            keyList.remove(Integer.valueOf(key));
+            keyList.addLast(key);
+            break;
+          }
+        }
+      }
+      return value;
+    }
+
+    public void put(int key, int value) {
+      if (size == capacity) {
+        if (!keyList.contains(key)) {
+          delete(keyList.removeFirst());
+        }
+      }
+      putVal(key, value);
+    }
+
+    private void putVal(int key, int value) {
+      Node node;
+      int index;
+      if ((node = element[index = key % capacity]) != null) {
+        for (Node n = node; n != null; n = n.next) {
+          if (key == n.key) {
+            n.value = value;
+            keyList.remove(Integer.valueOf(key));
+            break;
+          }
+          if (n.next == null) {
+            n.next = new Node(key, value, null);
+            size++;
+          }
+        }
+      } else {
+        element[index] = new Node(key, value, null);
+        size++;
+      }
+      keyList.addLast(key);
+    }
+
+    public void delete(int key) {
+      int index;
+      Node node = element[index = key % capacity];
+      if (node.key == key) {
+        element[index] = node.next;
+        node.next = null;
+      } else {
+        for (Node n = node, pre = node; n != null; pre = n, n = n.next) {
+          if (key == n.key) {
+            if (n.next != null) {
+              pre.next = n.next;
+              n.next = null;
+            } else {
+              pre.next = null;
+            }
+            break;
+          }
+        }
+      }
+      size--;
+
+    }
+
+    @Override
+    public String toString() {
+      return "LRUCache{" +
+              "element=" + Arrays.toString(element) +
+              '}';
+    }
+
+    class Node {
+      int key;
+      int value;
+      Node next;
+      public Node(int key, int value, Node next) {
+        this.key = key;
+        this.value = value;
+        this.next = next;
+      }
+
+      @Override
+      public String toString() {
+        return "Node{" +
+                "key=" + key +
+                ", value=" + value +
+                ", next=" + next +
+                '}';
+      }
+    }
+
+  }
+
 
   static class ListNode {
     int val;
