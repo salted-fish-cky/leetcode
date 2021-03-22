@@ -45,19 +45,20 @@ public class LeetCode {
 //    System.out.println(maxSubArray(new int[]{-2,1,-3,4,-1,2,1,-5,4}));
 //    System.out.println(spiralOrder(new int[][]{{1,2,3}, {4,5,6}, {7,8,9}}));
 //    System.out.println(rotateRight(new ListNode(1, new ListNode(2, new ListNode(3, null))), 2));
-    LRUCache lruCache = new LRUCache(2);
-    lruCache.put(2, 1);
-    System.out.println(lruCache.toString());
-    lruCache.put(1, 1);
-    System.out.println(lruCache.toString());
-    lruCache.put(2, 3);
-    System.out.println(lruCache.toString());
-    lruCache.put(4, 1);
-    System.out.println(lruCache.toString());
-    lruCache.get(1);
-    System.out.println(lruCache.toString());
-    lruCache.get(2);
-    System.out.println(lruCache.toString());
+//    LRUCache lruCache = new LRUCache(2);
+//    lruCache.put(2, 1);
+//    System.out.println(lruCache.toString());
+//    lruCache.put(1, 1);
+//    System.out.println(lruCache.toString());
+//    lruCache.put(2, 3);
+//    System.out.println(lruCache.toString());
+//    lruCache.put(4, 1);
+//    System.out.println(lruCache.toString());
+//    lruCache.get(1);
+//    System.out.println(lruCache.toString());
+//    lruCache.get(2);
+//    System.out.println(lruCache.toString());
+    calculate("3+2*2");
   }
 
   /**
@@ -1124,6 +1125,43 @@ public class LeetCode {
 
     }
     return prev;
+  }
+
+  /**
+   * 227. 基本计算器 II
+   * @param s
+   * @return
+   */
+  public static int calculate(String s) {
+    int i = 0, n = 0, len = s.length() - 1;
+    Stack<Integer> num = new Stack();
+    char sign = '+';
+    while(i <= len) {
+      char c = s.charAt(i);
+      if (Character.isDigit(c)) {
+        n = n * 10 + (c -'0');
+      }
+      if (!Character.isDigit(c) && c != ' ' || i == len ) {
+        if (sign == '*') {
+          num.push(num.pop() * n);
+        } else if (sign == '/') {
+          num.push(num.pop() / n);
+        } else if (sign == '-') {
+          num.push(-n);
+        } else {
+          num.push(n);
+        }
+        sign = c;
+        n = 0;
+      }
+
+      i++;
+    }
+    int result = 0;
+    for (Integer integer : num) {
+      result += integer;
+    }
+    return result;
   }
 
 
