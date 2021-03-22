@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import org.w3c.dom.Node;
+import sun.misc.LRUCache;
 
 /**
  * Description：
@@ -1067,6 +1068,62 @@ public class LeetCode {
     Arrays.sort(nums);
     int result = 0;
     return nums[nums.length - k];
+  }
+
+  /**
+   * 912. 排序数组
+   * @param nums
+   * @return
+   */
+  public int[] sortArray(int[] nums) {
+    quickSort(nums, 0, nums.length - 1);
+    return nums;
+  }
+
+  /**
+   * 快排
+   * @param nums
+   */
+  private void quickSort(int[] nums, int start, int end) {
+    if (start < end) {
+      int l = start, r = end;
+      int middle = nums[l];
+      while (l < r) {
+        while (l < r && middle <= nums[r]) {
+          r--;
+        }
+        if (l < r) {
+          nums[l++] = nums[r];
+        }
+        while (l < r && middle > nums[l]) {
+          l++;
+        }
+        if (l < r) {
+          nums[r--] = nums[l];
+        }
+      }
+      nums[l] = middle;
+      quickSort(nums, start, l - 1);
+      quickSort(nums, l + 1, end);
+    }
+  }
+
+  /**
+   * 206. 反转链表
+   * @param head
+   * @return
+   */
+  public ListNode reverseList(ListNode head) {
+    ListNode prev = null;
+    ListNode next = null;
+    while (head != null) {
+        next = head.next;
+        head.next = prev;
+        prev = head;
+        head = next;
+
+    }
+    return prev;
   }
 
 
