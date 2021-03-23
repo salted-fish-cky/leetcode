@@ -1220,17 +1220,30 @@ public class LeetCode {
   public List<List<Integer>> levelOrder(TreeNode root) {
     List<List<Integer>> resultList = new ArrayList<>();
     Queue<TreeNode> queue = new LinkedList<>();
-    int point = 1;
+    int index = 1;
+    int scan = 0;
     queue.add(root);
+    List<Integer> l = new ArrayList<>();
     while (!queue.isEmpty())    {
       TreeNode tree = queue.poll();
-      List<Integer> l = new ArrayList<>();
-      if (tree == null) {
-        l.add(null);
-      } else {
+      --index;
+      if (tree != null) {
         l.add(tree.val);
+        queue.add(tree.left);
+        queue.add(tree.right);
+        scan += 2;
       }
+      if (index <= 0) {
+        if (l.size() > 0) {
+          resultList.add(l);
+        }
+        l = new ArrayList<>();
+        index = scan;
+        scan = 0;
+      }
+
     }
+    return resultList;
   }
 
 
