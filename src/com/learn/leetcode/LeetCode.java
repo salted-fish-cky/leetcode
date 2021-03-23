@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Stack;
 import org.w3c.dom.Node;
 import sun.misc.LRUCache;
@@ -1164,6 +1165,75 @@ public class LeetCode {
     return result;
   }
 
+  /**
+   *  双指针解法
+   * 11. 盛最多水的容器
+   * @param height
+   * @return
+   */
+  public int maxArea2(int[] height) {
+    int start = 0, end = height.length - 1;
+    int num = 0;
+    while (start < end) {
+      int n;
+      if (height[start] > height[end]) {
+        n = height[end] * (end - start);
+        end--;
+      } else {
+        n = height[start] * (end - start);
+        start++;
+      }
+      num = Math.max(num, n);
+    }
+    return num;
+  }
+
+  /**
+   * 19. 删除链表的倒数第 N 个结点
+   * @param head
+   * @param n
+   * @return
+   */
+  public ListNode removeNthFromEnd(ListNode head, int n) {
+    ListNode left = head, right = head;
+    while (right != null) {
+      right = right.next;
+      if (n >= 0) {
+        n--;
+      } else {
+        left = left.next;
+      }
+    }
+    if (n >= 0) {
+      head = head.next;
+    } else {
+      left.next = left.next.next;
+    }
+    return head;
+  }
+
+  /**
+   * 102. 二叉树的层序遍历
+   * @param root
+   * @return
+   */
+  public List<List<Integer>> levelOrder(TreeNode root) {
+    List<List<Integer>> resultList = new ArrayList<>();
+    Queue<TreeNode> queue = new LinkedList<>();
+    int point = 1;
+    queue.add(root);
+    while (!queue.isEmpty())    {
+      TreeNode tree = queue.poll();
+      List<Integer> l = new ArrayList<>();
+      if (tree == null) {
+        l.add(null);
+      } else {
+        l.add(tree.val);
+      }
+    }
+  }
+
+
 
   private static ListNode convertNode(ListNode l, ListNode node) {
 
@@ -1328,6 +1398,25 @@ public class LeetCode {
               "val=" + val +
               ", next=" + next +
               '}';
+    }
+  }
+
+  static class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    TreeNode() {
+    }
+
+    TreeNode(int val) {
+      this.val = val;
+    }
+
+    TreeNode(int val, TreeNode left, TreeNode right) {
+      this.val = val;
+      this.left = left;
+      this.right = right;
     }
   }
 }
