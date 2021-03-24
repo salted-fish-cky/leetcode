@@ -59,7 +59,7 @@ public class LeetCode {
 //    System.out.println(lruCache.toString());
 //    lruCache.get(2);
 //    System.out.println(lruCache.toString());
-    calculate("3+2*2");
+    mergeSort(new int[]{5,2,3,1}, new int[4], 0, 3);
   }
 
   /**
@@ -1083,7 +1083,7 @@ public class LeetCode {
   }
 
   /**
-   * 快排
+   * 快速排序
    * @param nums
    */
   private void quickSort(int[] nums, int start, int end) {
@@ -1109,6 +1109,76 @@ public class LeetCode {
       quickSort(nums, l + 1, end);
     }
   }
+
+  /**
+   * 堆排序
+   * @param nums
+   */
+  private int[] heapSort(int[] nums) {
+    for (int i = nums.length/2 - 1; i >= 0; i--) {
+      toHead(nums, i, nums.length);
+    }
+    for (int j = nums.length - 1; j >= 0; j--) {
+      int temp = nums[0];
+      nums[0] = nums[j];
+      nums[j] = temp;
+      toHead(nums, 0, j);
+    }
+    return nums;
+  }
+
+  private void toHead(int[] nums, int start, int len) {
+    int temp = nums[start];
+    int k = 2*start + 1;
+    for (; k < len; k = 2*k + 1) {
+      if (k + 1 < len && nums[k] < nums[k + 1]) {
+        k++;
+      }
+      if (nums[k] > temp) {
+        nums[start] = nums[k];
+        start = k;
+      } else {
+        break;
+      }
+    }
+    nums[start] = temp;
+  }
+
+  /**
+   * 归并排序
+   * @param nums
+   * @param l
+   * @param r
+   */
+  private static void mergeSort(int[] nums, int[] reg, int l, int r) {
+    if (l >= r) {
+      return;
+    }
+    int mid = (l + r)/2;
+    mergeSort(nums, reg, l, mid);
+    mergeSort(nums, reg, mid + 1, r);
+    if (nums[mid] <= nums[mid + 1]) {
+      return;
+    }
+    merge(nums, reg, l, mid, r);
+  }
+
+  private static void merge(int[] nums, int[] reg, int l, int mid, int r) {
+    int k = l, start = l, lEnd = mid, rStart = mid + 1;
+    while(l <= lEnd && rStart <= r) {
+      reg[k++] = nums[l] > nums[rStart] ? nums[rStart++] : nums[l++];
+    }
+    while (l <= mid) {
+      reg[k++] = nums[l++];
+    }
+    while (rStart <= r) {
+      reg[k++] = nums[rStart++];
+    }
+    for (int i = start; i <= r; i++) {
+      nums[i] = reg[i];
+    }
+  }
+
 
   /**
    * 206. 反转链表
