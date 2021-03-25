@@ -59,7 +59,7 @@ public class LeetCode {
 //    System.out.println(lruCache.toString());
 //    lruCache.get(2);
 //    System.out.println(lruCache.toString());
-    mergeSort(new int[]{5,2,3,1}, new int[4], 0, 3);
+//    mergeSort(new int[]{5,2,3,1}, new int[4], 0, 3);
   }
 
   /**
@@ -1335,6 +1335,45 @@ public class LeetCode {
       mid = (start + end)/2;
     }
     return -1;
+  }
+
+  /**
+   * 双指针解法
+   * 3. 无重复字符的最长子串
+   * @return
+   */
+  public int lengthOfLongestSubstring2(String s) {
+    int len = 0, left = 0, right = 0, result = 0;
+    if ((len = s.length()) == 0) {
+      return 0;
+    }
+    int[] flag = new int[128];
+    for (int i = 0; i < flag.length; i++) {
+      flag[i] = -1;
+    }
+    while(left <= right && right < len) {
+      char c = s.charAt(right);
+      if (flag[c] != -1) {
+        result = Math.max(result, right - left);
+        if (flag[c] + 1 > left) {
+          left = flag[c] + 1;
+        }
+      }
+      flag[c] = right++;
+      if (right == len) {
+        result = Math.max(result, right - left);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * 5. 最长回文子串
+   * @param s
+   * @return
+   */
+  public String longestPalindrome(String s) {
+
   }
 
 
