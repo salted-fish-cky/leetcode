@@ -60,6 +60,7 @@ public class LeetCode {
 //    lruCache.get(2);
 //    System.out.println(lruCache.toString());
 //    mergeSort(new int[]{5,2,3,1}, new int[4], 0, 3);
+    System.out.println(coinChange2(new int[]{1,2,5}, 11));
   }
 
   /**
@@ -1372,9 +1373,50 @@ public class LeetCode {
    * @param s
    * @return
    */
-  public String longestPalindrome(String s) {
-
+  public String longestPalindrome3(String s) {
+    return s;
   }
+
+  /**
+   * 凑零钱问题 dp
+   * @param coins
+   * @param amount
+   * @return
+   */
+  public static int coinChange(int[] coins, int amount) {
+    if (amount == 0) {
+      return 0;
+    }
+    if (amount < 0) {
+      return -1;
+    }
+    int res = Integer.MAX_VALUE;
+    for (int i = 0; i < coins.length; i++) {
+      int sup = coinChange(coins, amount - coins[i]);
+      if (sup == -1) {
+        continue;
+      }
+      res = Math.min(res, sup + 1);
+    }
+    return res == Integer.MAX_VALUE ? -1 : res;
+  }
+
+  public static int coinChange2(int[] coins, int amount) {
+    int[] arr = new int[amount + 1];
+    for (int i = 1; i <= amount; i++) {
+      arr[i] = Integer.MAX_VALUE;
+    }
+    for (int i = 1; i <= amount; i++) {
+      for (int j = 0; j < coins.length; j++) {
+        if(i - coins[j] < 0) {
+          continue;
+        }
+        arr[i] = Math.min(arr[i], 1 + arr[i - coins[j]]);
+      }
+    }
+    return arr[amount];
+  }
+
 
 
 
