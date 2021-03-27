@@ -1369,12 +1369,39 @@ public class LeetCode {
   }
 
   /**
-   * 5. 最长回文子串
+   * 5. 最长回文子串 dp
    * @param s
    * @return
    */
   public String longestPalindrome3(String s) {
-    return s;
+    int len = s.length();
+    if (len < 2) {
+      return s;
+    }
+    boolean[][] dp = new boolean[len][len];
+    int max = 1, r = 1, l = 0, start = 0, end = 1;
+    while(r < len) {
+      l = 0;
+      while (l < r) {
+        if (s.charAt(l) != s.charAt(r)) {
+          dp[l][r] = false;
+        } else {
+          if (r - l < 3) {
+            dp[l][r] = true;
+          } else {
+            dp[l][r] = dp[l + 1][r - 1];
+          }
+        }
+        if (dp[l][r] && r - l + 1 > max) {
+          max = r - l + 1;
+          start = l;
+          end = r + 1;
+        }
+        l++;
+      }
+      r++;
+    }
+    return s.substring(start, end);
   }
 
   /**
@@ -1401,12 +1428,47 @@ public class LeetCode {
     return res == Integer.MAX_VALUE ? -1 : res;
   }
 
+  /**
+   * 887. 鸡蛋掉落
+   * @param k
+   * @param n
+   * @return
+   */
+  public int superEggDrop(int k, int n) {
+
+    int[][] dp = new int[k + 1][n + 1];
+    for (int i = 0; i < k + 1; i++) {
+      for (int j = 1; j < n + 1; j++) {
+        dp[i][j] = n + 1;
+      }
+    }
+    int res = Integer.MAX_VALUE;
+    for (int i = 1; i < k + 1; i++) {
+      for (int j = 1; j < n + 1; j++) {
+        for (int l = 1; l < n + 1; l++) {
+          if (i - 1 == 1) {
+            dp[i - 1][j] = n;
+            continue;
+          }
+          if (j - l == 0) {
+            dp[i][j - l] = 0;
+            continue;
+          }
+          res = Math.min(res, Math.max(dp[i][j - l], dp[i - 1][l - 1]));
+        }
+
+      }
+    }
+    return res;
+  }
+
   public static int coinChange2(int[] coins, int amount) {
     int[] arr = new int[amount + 1];
-    for (int i = 1; i <= amount; i++) {
-      arr[i] = Integer.MAX_VALUE;
+    for (int i = 0; i <= amount; i++) {
+      arr[i] = amount + 1;
     }
-    for (int i = 1; i <= amount; i++) {
+    arr[0] = 0;
+    for (int i = 0; i <= amount; i++) {
       for (int j = 0; j < coins.length; j++) {
         if(i - coins[j] < 0) {
           continue;
@@ -1414,7 +1476,7 @@ public class LeetCode {
         arr[i] = Math.min(arr[i], 1 + arr[i - coins[j]]);
       }
     }
-    return arr[amount];
+    return arr[amount] == amount + 1 ? -1 : arr[amount];
   }
 
 
