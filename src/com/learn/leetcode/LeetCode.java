@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
+import javax.swing.tree.TreeNode;
 import org.w3c.dom.Node;
 import sun.misc.LRUCache;
 
@@ -60,7 +61,7 @@ public class LeetCode {
 //    lruCache.get(2);
 //    System.out.println(lruCache.toString());
 //    mergeSort(new int[]{5,2,3,1}, new int[4], 0, 3);
-    System.out.println(coinChange2(new int[]{1,2,5}, 11));
+    System.out.println(rob(new int[]{1,2,3,1}));
   }
 
   /**
@@ -1530,6 +1531,29 @@ public class LeetCode {
       }
     }
     return dp[k][n];
+  }
+
+  /**
+   * 213. 打家劫舍 II
+   * @param nums
+   * @return
+   */
+  public int rob(int[] nums) {
+    if(nums.length == 0) {return 0};
+    if(nums.length == 1) {return nums[0]};
+    return Math.max(myRob(Arrays.copyOfRange(nums, 0, nums.length - 1)),
+            myRob(Arrays.copyOfRange(nums, 1, nums.length)));
+
+  }
+
+  private int myRob(int[] nums) {
+    int pre = 0, cur = 0, tmp;
+    for(int num : nums) {
+      tmp = cur;
+      cur = Math.max(pre + num, cur);
+      pre = tmp;
+    }
+    return cur;
   }
 
   public static int coinChange2(int[] coins, int amount) {
