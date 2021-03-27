@@ -1405,6 +1405,76 @@ public class LeetCode {
   }
 
   /**
+   * 300. 最长递增子序列 dp
+   * @param s
+   * @return
+   */
+  public int lengthOfLIS(int[] nums) {
+    int len = 0;
+    int[] dp = new int[len = nums.length];
+    for (int i = 0; i < len; i++) {
+      dp[i] = 1;
+
+    }
+    int max = 1;
+    for (int i = 1; i < len; i++) {
+      for (int j = 0; j <= i; j++) {
+        if (nums[j] < nums[i]) {
+          dp[i] = (max = Math.max(dp[j], max)) + 1;
+        }
+      }
+      max = 1;
+    }
+    for (int i = 0; i < len; i++) {
+      max = Math.max(max, dp[i]);
+    }
+    return max;
+  }
+
+  /**
+   * 152. 乘积最大子数组
+   * @param nums
+   * @return
+   */
+  public int maxProduct(int[] nums) {
+    int len = nums.length, max = Integer.MIN_VALUE;
+    if (len < 2) {
+      return nums[0];
+    }
+    int[] dp = new int[len];
+    for (int l = 0; l < len; l++) {
+      for (int r = l; r < len; r++) {
+        if (l == r) {
+          dp[r] = nums[l];
+        } else {
+          dp[r] = dp[r - 1] * nums[r];
+        }
+        max = Math.max(max, dp[r]);
+      }
+
+    }
+    return max;
+  }
+
+  /**
+   * 152. 乘积最大子数组 dp
+   * @param nums
+   * @return
+   */
+  public int maxProduct2(int[] nums) {
+    int len = nums.length, max = nums[0], min = nums[0], res = nums[0];
+    for (int i = 1; i < len; i++) {
+      int a = nums[i];
+      int ma = max;
+      int mi = min;
+      max = Math.max(ma * a, Math.max(mi * a, a));
+      min = Math.min(mi * a, Math.min(ma * a, a));
+      res = Math.max(res, max);
+    }
+    return res;
+  }
+
+  /**
    * 凑零钱问题 dp
    * @param coins
    * @param amount
@@ -1428,6 +1498,7 @@ public class LeetCode {
     return res == Integer.MAX_VALUE ? -1 : res;
   }
 
+
   /**
    * 887. 鸡蛋掉落
    * @param k
@@ -1435,31 +1506,30 @@ public class LeetCode {
    * @return
    */
   public int superEggDrop(int k, int n) {
-
+    if (k == 1) {
+      return n;
+    }
+    if (n == 1) {
+      return 1;
+    }
     int[][] dp = new int[k + 1][n + 1];
-    for (int i = 0; i < k + 1; i++) {
-      for (int j = 1; j < n + 1; j++) {
-        dp[i][j] = n + 1;
-      }
+    for (int i = 0; i < n + 1; i++) {
+      dp[0][i] = 0;
+      dp[1][i] = i;
     }
-    int res = Integer.MAX_VALUE;
     for (int i = 1; i < k + 1; i++) {
-      for (int j = 1; j < n + 1; j++) {
-        for (int l = 1; l < n + 1; l++) {
-          if (i - 1 == 1) {
-            dp[i - 1][j] = n;
-            continue;
-          }
-          if (j - l == 0) {
-            dp[i][j - l] = 0;
-            continue;
-          }
-          res = Math.min(res, Math.max(dp[i][j - l], dp[i - 1][l - 1]));
+      dp[i][1] = 1;
+      dp[i][0] = 0;
+    }
+    for (int i = 2; i < k + 1; i++) {
+      for (int j = 2; j < n + 1; j++) {
+        dp[i][j] = n;
+        for (int l = 1; l <= j; l++) {
+          dp[i][j] = Math.min(dp[i][j], Math.max(dp[i][j - l], dp[i - 1][l - 1]) + 1);
         }
-
       }
     }
-    return res;
+    return dp[k][n];
   }
 
   public static int coinChange2(int[] coins, int amount) {
