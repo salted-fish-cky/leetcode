@@ -61,7 +61,7 @@ public class LeetCode {
 //    lruCache.get(2);
 //    System.out.println(lruCache.toString());
 //    mergeSort(new int[]{5,2,3,1}, new int[4], 0, 3);
-    System.out.println(rob(new int[]{1,2,3,1}));
+    System.out.println(getLeastNumbers(new int[]{1,3,2}, 2));
   }
 
   /**
@@ -1539,8 +1539,12 @@ public class LeetCode {
    * @return
    */
   public int rob(int[] nums) {
-    if(nums.length == 0) {return 0};
-    if(nums.length == 1) {return nums[0]};
+    if(nums.length == 0) {
+      return 0;
+    }
+    if(nums.length == 1) {
+      return nums[0];
+    }
     return Math.max(myRob(Arrays.copyOfRange(nums, 0, nums.length - 1)),
             myRob(Arrays.copyOfRange(nums, 1, nums.length)));
 
@@ -1573,6 +1577,49 @@ public class LeetCode {
     return arr[amount] == amount + 1 ? -1 : arr[amount];
   }
 
+  /**
+   * 剑指 Offer 40. 最小的k个数
+   * @param arr
+   * @param k
+   * @return
+   */
+  public static int[] getLeastNumbers(int[] arr, int k) {
+    if (k == 0) {
+       return new int[0];
+    }
+    int l = 0, r = arr.length - 1, startIndex = 0;
+    sortPart(arr, k - 1, l, r, startIndex);
+    return Arrays.copyOfRange(arr, 0, k);
+  }
+
+  private static void sortPart(int[] arr, int k, int l, int r, int startIndex) {
+    if (l < r) {
+      int temp = arr[l];
+      while (l < r) {
+        while(arr[r] > temp && l < r) {
+          r--;
+        }
+        if (l < r) {
+          arr[l++] = arr[r];
+        }
+        while (arr[l] <= temp &&l < r) {
+          l++;
+        }
+        if (l < r) {
+          arr[r--] = arr[l];
+        }
+      }
+      arr[l] = temp;
+      if (k < l) {
+        sortPart(arr, k, startIndex, l - 1, startIndex);
+      } else if (k > l) {
+        sortPart(arr, k, l + 1, arr.length - 1, l + 1);
+      } else {
+        return;
+      }
+    }
+
+  }
 
 
 
