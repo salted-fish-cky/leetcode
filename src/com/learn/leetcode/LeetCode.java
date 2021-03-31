@@ -1621,6 +1621,22 @@ public class LeetCode {
 
   }
 
+  /**
+   * 70. 爬楼梯
+   * @param n
+   * @return
+   */
+  public int climbStairs(int n) {
+    int len = n + 1;
+    int[] dp = new int[len];
+    dp[0] = 1;
+    dp[1] = 1;
+    for (int i = 2; i < len; i++) {
+      dp[i]  = dp[i - 2] + dp[i - 1];
+    }
+    return dp[n];
+  }
+
 
 
   private static ListNode convertNode(ListNode l, ListNode node) {
