@@ -1654,7 +1654,35 @@ public class LeetCode {
     return dp[amount];
   }
 
+  /**
+   * 494. 目标和
+   * @param nums
+   * @param S
+   * @return
+   */
+  public int findTargetSumWays(int[] nums, int S) {
+    int sum = 0, len;
+    for (int i = 0; i < (len = nums.length); i++) {
+      sum += nums[i];
+    }
+    if (Math.abs(S) > sum) {
+      return 0;
+    }
+    int t = 2*sum + 1;
+    int[][] dp = new int[len][t];
+    dp[0][sum + nums[0]] = 1;
+    dp[0][sum - nums[0]] += 1;
 
+    for (int i = 1; i < len; i++) {
+      for (int j = 0; j < t; j++) {
+        int l = j - nums[i] < 0 ? 0 : j - nums[i];
+        int r = j + nums[i] >= t ? t - 1 : j + nums[i];
+        dp[i][j] = dp[i - 1][l] + dp[i - 1][r];
+      }
+    }
+    return dp[len - 1][sum + S];
+
+  }
 
   private static ListNode convertNode(ListNode l, ListNode node) {
 
