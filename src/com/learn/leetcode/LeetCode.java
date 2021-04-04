@@ -61,7 +61,11 @@ public class LeetCode {
 //    lruCache.get(2);
 //    System.out.println(lruCache.toString());
 //    mergeSort(new int[]{5,2,3,1}, new int[4], 0, 3);
-    System.out.println(getLeastNumbers(new int[]{1,3,2}, 2));
+//    System.out.println(getLeastNumbers(new int[]{1,3,2}, 2));
+//    KthLargest k = new KthLargest(7, new int[]{-10,1,3,1,4,10,3,9,4,5,1});
+
+//    isAnagram("aacc", "ccac");
+    myPow(2.00000, -2147483648);
   }
 
   /**
@@ -1707,6 +1711,175 @@ public class LeetCode {
     }
     return false;
   }
+
+  /**
+   * 703. 数据流中的第 K 大元素 :解决思路 大顶堆 小顶堆排序
+   */
+  static class KthLargest {
+
+    int k;
+    int[] arr;
+    public KthLargest(int k, int[] nums) {
+      this.k = k;
+      arr = new int[k];
+      for (int i = 0; i < k; i++) {
+        arr[i] = Integer.MIN_VALUE;
+      }
+      toHeap(nums);
+    }
+
+    private void toHeap(int[] nums) {
+      int len;
+      for (int i = (len = nums.length)/2 - 1; i >= 0; i--) {
+        maxHeap(nums, i, nums.length);
+      }
+      int arrLen = k - 1;
+      for (int i = len - 1; i >= 0; i--, arrLen--) {
+        arr[arrLen] = nums[0];
+        nums[0] = nums[i];
+        nums[i] = arr[arrLen];
+        if (arrLen == 0) {
+          break;
+        }
+        maxHeap(nums, 0, i);
+      }
+    }
+
+    private void maxHeap(int[] nums, int index, int len) {
+      int temp = nums[index];
+      for (int i = 2*index + 1; i < len; i = 2*i + 1) {
+        if (i + 1 < len && nums[i] < nums[i + 1]) {
+          i++;
+        }
+        if (nums[i] > temp) {
+          nums[index] = nums[i];
+          index = i;
+        } else {
+          break;
+        }
+      }
+      nums[index] = temp;
+    }
+
+    private void minHeap(int index) {
+      int temp = arr[index];
+      int len = k;
+      for (int i = 2*index + 1; i < len; i = 2*i + 1) {
+        if (i + 1 < len && arr[i] > arr[i + 1]) {
+          i++;
+        }
+        if (arr[i] < temp) {
+          arr[index] = arr[i];
+          index = i;
+        } else {
+          break;
+        }
+      }
+      arr[index] = temp;
+    }
+
+    public int add(int val) {
+      if (arr[0] < val) {
+        arr[0] = val;
+        minHeap(0);
+      }
+      return arr[0];
+    }
+  }
+
+  /**
+   * 242. 有效的字母异位词
+   * @param s
+   * @param t
+   * @return
+   */
+  public static boolean isAnagram(String s, String t) {
+    int len;
+    if ((len = s.length()) != t.length()) {
+      return false;
+    }
+    HashMap<Character, Integer> map1 = new HashMap<>((int) (len/0.75f + 1));
+    HashMap<Character, Integer> map2 = new HashMap<>((int) (len/0.75f + 1));
+    int i = 0;
+    while (i < len) {
+      char c1 = s.charAt(i);
+      char c2 = t.charAt(i);
+      map1.put(c1, map1.getOrDefault(c1, 0) + 1);
+      map2.put(c2, map2.getOrDefault(c2, 0) + 1);
+      i++;
+    }
+    return map1.equals(map2);
+  }
+
+  /**
+   * 98. 验证二叉搜索树
+   * @param root
+   * @return
+   */
+  long pre = Long.MIN_VALUE;
+  public boolean isValidBST(TreeNode root) {
+    if (root == null) {
+      return true;
+    }
+    // 访问左子树
+    if (!isValidBST(root.left)) {
+      return false;
+    }
+    // 访问当前节点：如果当前节点小于等于中序遍历的前一个节点，说明不满足BST，返回 false；否则继续遍历。
+    if (root.val <= pre) {
+      return false;
+    }
+    pre = root.val;
+    // 访问右子树
+    return isValidBST(root.right);
+  }
+
+  /**
+   * 236. 二叉树的最近公共祖先
+   * @param root
+   * @param p
+   * @param q
+   * @return
+   */
+  public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    if (root == null) {
+      return root;
+    }
+    if (root == p || root == q) {
+      return root;
+    }
+    TreeNode left = lowestCommonAncestor(root.left, p, q);
+    TreeNode right = lowestCommonAncestor(root.right, p, q);
+    if (left != null && right != null) {
+      return root;
+    } else {
+      return left == null ? right : left;
+    }
+  }
+
+  /**
+   * 50. Pow(x, n)
+   * @param x
+   * @param n
+   * @return
+   */
+  public static double myPow(double x, int n) {
+    long m = n;
+    if (m < 0) {
+      x = 1/x;
+      m = -m;
+    }
+    double result = 1d;
+    while(m > 0) {
+      if ((m & 1) == 1) {
+        result *= x;
+      }
+      x *= x;
+      m >>= 1;
+    }
+    return result;
+  }
+
 
   /**
    * LRU 缓存机制
