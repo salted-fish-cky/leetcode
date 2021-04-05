@@ -14,6 +14,7 @@
 
 package com.learn.leetcode;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -65,7 +66,9 @@ public class LeetCode {
 //    KthLargest k = new KthLargest(7, new int[]{-10,1,3,1,4,10,3,9,4,5,1});
 
 //    isAnagram("aacc", "ccac");
-    myPow(2.00000, -2147483648);
+//    myPow(2.00000, -2147483648);
+//    totalNQueens(4);
+    System.out.println(mySqrt(999, 6));
   }
 
   /**
@@ -1289,7 +1292,7 @@ public class LeetCode {
   }
 
   /**
-   * 102. 二叉树的层序遍历
+   * 102. 二叉树的层序遍历 bfs解法
    * @param root
    * @return
    */
@@ -1320,6 +1323,31 @@ public class LeetCode {
 
     }
     return resultList;
+  }
+
+  /**
+   * 102. 二叉树的层序遍历 dfs解法
+   * @param root
+   * @return
+   */
+  public List<List<Integer>> levelOrder2(TreeNode root) {
+    List<List<Integer>> list = new ArrayList<>();
+    if (root == null) {
+      return list;
+    }
+    dfs(list, 0, root);
+    return list;
+  }
+  private void dfs(List<List<Integer>> list, int level, TreeNode node) {
+    if (node == null) {
+      return;
+    }
+    if (list.size() < level + 1) {
+      list.add(new ArrayList<>());
+    }
+    list.get(level).add(node.val);
+    dfs(list, level + 1, node.left);
+    dfs(list, level + 1, node.right);
   }
 
   /**
@@ -1880,6 +1908,157 @@ public class LeetCode {
     return result;
   }
 
+  /**
+   * 122. 买卖股票的最佳时机 II
+   * @param prices
+   * @return
+   */
+  public int maxProfit(int[] prices) {
+    int result = 0, len;
+    for (int i = 0; i < (len = prices.length); i++) {
+      if (i != len - 1 && prices[i] < prices[i + 1]) {
+        result += prices[i + 1] - prices[i];
+      }
+    }
+    return result;
+  }
+
+  /**
+   * 104. 二叉树的最大深度
+   * @param root
+   * @return
+   */
+  public int maxDepth(TreeNode root) {
+    if (root == null) {
+      return 0;
+    }
+    return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+  }
+
+  /**
+   * 111. 二叉树的最小深度
+   * @param root
+   * @return
+   */
+  public int minDepth(TreeNode root) {
+    if (root == null) {
+      return 0;
+    }
+    int minLeft = minDepth(root.left);
+    int minRight = minDepth(root.right);
+    if (minLeft == 0 || minRight == 0) {
+      return minLeft + minRight + 1;
+    } else {
+      return Math.min(minLeft, minRight) + 1;
+    }
+  }
+
+  /**
+   * 52. N皇后 II
+   * @param n
+   * @return
+   */
+  public static int totalNQueens(int n) {
+    boolean[] row = new boolean[n];
+    boolean[] col = new boolean[n];
+    List<Integer> pie = new ArrayList<>(n);
+    List<Integer> na = new ArrayList<>(n);
+    int result = 0;
+    return gen(row, col, pie, na, 0, n, result);
+  }
+
+  private static int gen(boolean[] row, boolean[] col, List<Integer> pie, List<Integer> na, int start, int n, int result) {
+    if (start == n) {
+      return result + 1;
+    }
+    for (int i = 0; i < n; i++) {
+      if (!row[start] && !col[i] && !pie.contains(start + i) && !na.contains(start - i)) {
+        row[start] = true;
+        col[i] = true;
+        pie.add(start + i);
+        na.add(start - i);
+        result = gen(row, col, pie, na, start + 1, n, result);
+        row[start] = false;
+        col[i] = false;
+        pie.remove(Integer.valueOf(start + i));
+        na.remove(Integer.valueOf(start - i));
+      } else {
+        continue;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * 37. 解数独
+   * @param board
+   */
+  public void solveSudoku(char[][] board) {
+    if (board != null && board.length != 0) {
+      solve(board);
+    }
+  }
+  private boolean solve(char[][] board) {
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        if ('.' == board[i][j]) {
+          for (char k = '1'; k <= '9' ; k++) {
+            if (isValid(board, j, i, k)) {
+              board[i][j] = k;
+              if (solve(board)) {
+                return true;
+              } else {
+                board[i][j] = '.';
+              }
+            }
+          }
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+  private boolean isValid(char[][] board, int col, int row, char c) {
+    for (int i = 0; i < board.length; i++) {
+      if (board[row][i] == c) {
+        return false;
+      }
+      if (board[i][col] == c) {
+        return false;
+      }
+    }
+    int cStart = (col/3)*3, cEnd = cStart + 3, rStart = (row/3)*3, rEnd = rStart + 3;
+    for (int i = rStart; i < rEnd; i++) {
+      for (int j = cStart; j < cEnd; j++) {
+        if (board[i][j] == c) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * 69. x 的平方根
+   * @param x
+   * @return
+   */
+  public static double mySqrt(double x, int n) {
+    double l = 0, r = x;
+    double addNum = Math.pow(1d / 10, n);
+    while (l <= r) {
+      double mid = (l + r) / 2;
+      double m = x / mid;
+      if (m > mid && Math.abs(m - mid) > addNum) {
+        l += addNum;
+      } else if(m < mid && Math.abs(mid - m) > addNum) {
+        r -= addNum;
+      } else {
+        return new BigDecimal(mid).setScale(n, BigDecimal.ROUND_HALF_UP).doubleValue();
+      }
+    }
+    return l;
+  }
 
   /**
    * LRU 缓存机制
