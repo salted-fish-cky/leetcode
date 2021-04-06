@@ -68,7 +68,8 @@ public class LeetCode {
 //    isAnagram("aacc", "ccac");
 //    myPow(2.00000, -2147483648);
 //    totalNQueens(4);
-    System.out.println(mySqrt(999, 6));
+//    System.out.println(mySqrt(5, 4));
+    System.out.println(exist(new char[][]{{'A','B','C','E'}, {'S','F','C','S'}, {'A','D','E','E'}}, "ABCCED"));
   }
 
   /**
@@ -2050,14 +2051,53 @@ public class LeetCode {
       double mid = (l + r) / 2;
       double m = x / mid;
       if (m > mid && Math.abs(m - mid) > addNum) {
-        l += addNum;
+        l = mid;
       } else if(m < mid && Math.abs(mid - m) > addNum) {
-        r -= addNum;
+        r = mid;
       } else {
         return new BigDecimal(mid).setScale(n, BigDecimal.ROUND_HALF_UP).doubleValue();
       }
     }
     return l;
+  }
+
+  /**
+   * 79. 单词搜索
+   * @param board
+   * @param word
+   * @return
+   */
+  public static boolean exist(char[][] board, String word) {
+    int rLen, cLen;
+    boolean[][] flag = new boolean[rLen = board.length][cLen = board[0].length];
+    for (int i = 0; i < rLen; i++) {
+      for (int j = 0; j < cLen; j++) {
+        if (exist(board, word, 0, flag, i, j, rLen, cLen)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public static boolean exist(char[][] board, String word, int index, boolean[][] flag, int row, int col, int rLen, int cLen) {
+    if (index == word.length()) {
+      return true;
+    }
+    if (row >= rLen || row < 0 || col >= cLen || col < 0) {
+      return false;
+    }
+    if (!flag[row][col] && board[row][col] == word.charAt(index)) {
+      flag[row][col] = true;
+      boolean f1 = exist(board, word, index + 1, flag, row, col + 1, rLen, cLen);
+      boolean f2 = exist(board, word, index + 1, flag, row + 1, col, rLen, cLen);
+      boolean f3 = exist(board, word, index + 1, flag, row - 1, col, rLen, cLen);
+      boolean f4 = exist(board, word, index + 1, flag, row, col - 1, rLen, cLen);
+      flag[row][col] = false;
+      return f1 || f2 || f3 || f4;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -2199,6 +2239,70 @@ public class LeetCode {
               "val=" + val +
               ", next=" + next +
               '}';
+    }
+  }
+
+
+  /**
+   * 208. 实现 Trie (前缀树) 字典数
+   */
+  static class Trie {
+
+    TrieNode root;
+    /** Initialize your data structure here. */
+    public Trie() {
+      root = new TrieNode();
+    }
+
+    /** Inserts a word into the trie. */
+    public void insert(String word) {
+      TrieNode ws = root;
+      for (int i = 0; i < word.length(); i++) {
+        char c = word.charAt(i);
+        if (ws.children[c - 'a'] == null) {
+          ws.children[c - 'a'] = new TrieNode(c, false);
+        }
+        ws = ws.children[c - 'a'];
+      }
+      ws.isWord = true;
+    }
+
+    /** Returns if the word is in the trie. */
+    public boolean search(String word) {
+      TrieNode ws = root;
+      for (int i = 0; i < word.length(); i++) {
+        char c = word.charAt(i);
+        if (ws.children[c - 'a'] == null) {
+          return false;
+        }
+        ws = ws.children[c - 'a'];
+      }
+      return ws.isWord;
+    }
+
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    public boolean startsWith(String prefix) {
+      TrieNode ws = root;
+      for (int i = 0; i < prefix.length(); i++) {
+        char c = prefix.charAt(i);
+        if (ws.children[c - 'a'] == null) {
+          return false;
+        }
+        ws = ws.children[c - 'a'];
+      }
+      return true;
+    }
+
+    class TrieNode {
+      char val;
+      boolean isWord;
+      TrieNode[] children = new TrieNode[26];
+
+      public TrieNode(char val, boolean isWord) {
+        this.val = val;
+        this.isWord = isWord;
+      }
+      public TrieNode(){}
     }
   }
 
