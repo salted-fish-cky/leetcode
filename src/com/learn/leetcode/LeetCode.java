@@ -1403,69 +1403,6 @@ public class LeetCode {
   }
 
   /**
-   * 5. 最长回文子串 dp
-   * @param s
-   * @return
-   */
-  public String longestPalindrome3(String s) {
-    int len = s.length();
-    if (len < 2) {
-      return s;
-    }
-    boolean[][] dp = new boolean[len][len];
-    int max = 1, r = 1, l = 0, start = 0, end = 1;
-    while(r < len) {
-      l = 0;
-      while (l < r) {
-        if (s.charAt(l) != s.charAt(r)) {
-          dp[l][r] = false;
-        } else {
-          if (r - l < 3) {
-            dp[l][r] = true;
-          } else {
-            dp[l][r] = dp[l + 1][r - 1];
-          }
-        }
-        if (dp[l][r] && r - l + 1 > max) {
-          max = r - l + 1;
-          start = l;
-          end = r + 1;
-        }
-        l++;
-      }
-      r++;
-    }
-    return s.substring(start, end);
-  }
-
-  /**
-   * 300. 最长递增子序列 dp
-   * @param s
-   * @return
-   */
-  public int lengthOfLIS(int[] nums) {
-    int len = 0;
-    int[] dp = new int[len = nums.length];
-    for (int i = 0; i < len; i++) {
-      dp[i] = 1;
-
-    }
-    int max = 1;
-    for (int i = 1; i < len; i++) {
-      for (int j = 0; j <= i; j++) {
-        if (nums[j] < nums[i]) {
-          dp[i] = (max = Math.max(dp[j], max)) + 1;
-        }
-      }
-      max = 1;
-    }
-    for (int i = 0; i < len; i++) {
-      max = Math.max(max, dp[i]);
-    }
-    return max;
-  }
-
-  /**
    * 152. 乘积最大子数组
    * @param nums
    * @return
@@ -1490,23 +1427,6 @@ public class LeetCode {
     return max;
   }
 
-  /**
-   * 152. 乘积最大子数组 dp
-   * @param nums
-   * @return
-   */
-  public int maxProduct2(int[] nums) {
-    int len = nums.length, max = nums[0], min = nums[0], res = nums[0];
-    for (int i = 1; i < len; i++) {
-      int a = nums[i];
-      int ma = max;
-      int mi = min;
-      max = Math.max(ma * a, Math.max(mi * a, a));
-      min = Math.min(mi * a, Math.min(ma * a, a));
-      res = Math.max(res, max);
-    }
-    return res;
-  }
 
   /**
    * 凑零钱问题 dp
@@ -1532,83 +1452,6 @@ public class LeetCode {
     return res == Integer.MAX_VALUE ? -1 : res;
   }
 
-
-  /**
-   * 887. 鸡蛋掉落
-   * @param k
-   * @param n
-   * @return
-   */
-  public int superEggDrop(int k, int n) {
-    if (k == 1) {
-      return n;
-    }
-    if (n == 1) {
-      return 1;
-    }
-    int[][] dp = new int[k + 1][n + 1];
-    for (int i = 0; i < n + 1; i++) {
-      dp[0][i] = 0;
-      dp[1][i] = i;
-    }
-    for (int i = 1; i < k + 1; i++) {
-      dp[i][1] = 1;
-      dp[i][0] = 0;
-    }
-    for (int i = 2; i < k + 1; i++) {
-      for (int j = 2; j < n + 1; j++) {
-        dp[i][j] = n;
-        for (int l = 1; l <= j; l++) {
-          dp[i][j] = Math.min(dp[i][j], Math.max(dp[i][j - l], dp[i - 1][l - 1]) + 1);
-        }
-      }
-    }
-    return dp[k][n];
-  }
-
-  /**
-   * 213. 打家劫舍 II
-   * @param nums
-   * @return
-   */
-  public int rob(int[] nums) {
-    if(nums.length == 0) {
-      return 0;
-    }
-    if(nums.length == 1) {
-      return nums[0];
-    }
-    return Math.max(myRob(Arrays.copyOfRange(nums, 0, nums.length - 1)),
-            myRob(Arrays.copyOfRange(nums, 1, nums.length)));
-
-  }
-
-  private int myRob(int[] nums) {
-    int pre = 0, cur = 0, tmp;
-    for(int num : nums) {
-      tmp = cur;
-      cur = Math.max(pre + num, cur);
-      pre = tmp;
-    }
-    return cur;
-  }
-
-  public static int coinChange2(int[] coins, int amount) {
-    int[] arr = new int[amount + 1];
-    for (int i = 0; i <= amount; i++) {
-      arr[i] = amount + 1;
-    }
-    arr[0] = 0;
-    for (int i = 0; i <= amount; i++) {
-      for (int j = 0; j < coins.length; j++) {
-        if(i - coins[j] < 0) {
-          continue;
-        }
-        arr[i] = Math.min(arr[i], 1 + arr[i - coins[j]]);
-      }
-    }
-    return arr[amount] == amount + 1 ? -1 : arr[amount];
-  }
 
   /**
    * 剑指 Offer 40. 最小的k个数
@@ -1654,68 +1497,6 @@ public class LeetCode {
 
   }
 
-  /**
-   * 70. 爬楼梯
-   * @param n
-   * @return
-   */
-  public int climbStairs(int n) {
-    int len = n + 1;
-    int[] dp = new int[len];
-    dp[0] = 1;
-    dp[1] = 1;
-    for (int i = 2; i < len; i++) {
-      dp[i]  = dp[i - 2] + dp[i - 1];
-    }
-    return dp[n];
-  }
-
-  /**
-   * 518. 零钱兑换 II
-   * @param amount
-   * @param coins
-   * @return
-   */
-  public int change(int amount, int[] coins) {
-    int[] dp = new int[amount + 1];
-    dp[0] = 1;
-    for (int i = 0; i < coins.length; i++) {
-      for (int j = coins[i]; j <= amount; j++) {
-        dp[j] += dp[j - coins[i]];
-      }
-    }
-    return dp[amount];
-  }
-
-  /**
-   * 494. 目标和
-   * @param nums
-   * @param S
-   * @return
-   */
-  public int findTargetSumWays(int[] nums, int S) {
-    int sum = 0, len;
-    for (int i = 0; i < (len = nums.length); i++) {
-      sum += nums[i];
-    }
-    if (Math.abs(S) > sum) {
-      return 0;
-    }
-    int t = 2*sum + 1;
-    int[][] dp = new int[len][t];
-    dp[0][sum + nums[0]] = 1;
-    dp[0][sum - nums[0]] += 1;
-
-    for (int i = 1; i < len; i++) {
-      for (int j = 0; j < t; j++) {
-        int l = j - nums[i] < 0 ? 0 : j - nums[i];
-        int r = j + nums[i] >= t ? t - 1 : j + nums[i];
-        dp[i][j] = dp[i - 1][l] + dp[i - 1][r];
-      }
-    }
-    return dp[len - 1][sum + S];
-
-  }
 
   private static ListNode convertNode(ListNode l, ListNode node) {
 
@@ -2098,6 +1879,33 @@ public class LeetCode {
     } else {
       return false;
     }
+  }
+
+  /**
+   * 191. 位1的个数
+   * @param n
+   * @return
+   */
+  public int hammingWeight(int n) {
+    int res = 0;
+    while (n != 0) {
+      res++;
+      n = n & (n - 1);
+    }
+    return res;
+  }
+
+  /**
+   * 338. 比特位计数
+   * @param num
+   * @return
+   */
+  public int[] countBits(int num) {
+    int[] bit = new int[num + 1];
+    for (int i = 1; i <= num; i++) {
+      bit[i] = bit[i & (i - 1)] + 1;
+    }
+    return bit;
   }
 
   /**
