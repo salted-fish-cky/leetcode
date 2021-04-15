@@ -26,6 +26,7 @@ import java.util.List;
  */
 public class DynamicProgram {
   public static void main(String[] args) {
+    maxProfit(2, new int[]{3,2,6,5,0,3});
   }
 
   /**
@@ -267,5 +268,109 @@ public class DynamicProgram {
       }
     }
     return dp[0];
+  }
+
+  /**
+   * 188. 买卖股票的最佳时机 IV
+   * @param k
+   * @param prices
+   * @return
+   */
+  public static int maxProfit(int k, int[] prices) {
+    int len;
+    if (k == 0 || (len = prices.length) == 0) {
+      return 0;
+    }
+    k = Math.min(k, len/2);
+    int[][][] dp = new int[len][k + 1][2];
+    int res = 0;
+    for (int i = 0; i <= k; i++) {
+      dp[0][i][1] = -prices[0];
+    }
+    for (int i = 1; i < len; i++) {
+      for (int j = 1; j <= k; j++) {
+        dp[i][j][0] = Math.max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i]);
+        dp[i][j][1] = Math.max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i]);
+      }
+    }
+    for (int i = 0; i <= k; i++) {
+      res = Math.max(res, dp[len - 1][i][0]);
+    }
+    return res;
+  }
+
+  /**
+   * 123. 买卖股票的最佳时机 III
+   * @param prices
+   * @return
+   */
+  public int maxProfit(int[] prices) {
+    int len;
+    if ((len = prices.length) == 0) {
+      return 0;
+    }
+    int[][][] dp = new int[len][3][2];
+    int res = 0;
+    for (int i = 0; i <= 2; i++) {
+      dp[0][i][1] = -prices[0];
+    }
+    for (int i = 1; i < len; i++) {
+      for (int j = 1; j <= 2; j++) {
+        dp[i][j][0] = Math.max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i]);
+        dp[i][j][1] = Math.max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i]);
+      }
+    }
+    for (int i = 0; i <= 2; i++) {
+      res = Math.max(res, dp[len - 1][i][0]);
+    }
+    return res;
+  }
+
+  /**
+   *309. 最佳买卖股票时机含冷冻期
+   * @param prices
+   * @return
+   */
+  public int maxProfit2(int[] prices) {
+    int len;
+    if ((len = prices.length) <= 1) {
+      return 0;
+    }
+    int[][] dp = new int[len][3];
+    dp[0][0] = -prices[0];
+    for (int i = 1; i < len; i++) {
+      dp[i][0] = Math.max(dp[i - 1][2] - prices[i], dp[i - 1][0]);
+      dp[i][1] = dp[i - 1][0] + prices[i];
+      dp[i][2] = Math.max(dp[i - 1][1], dp[i - 1][2]);
+    }
+    return Math.max(dp[len - 1][1], dp[len - 1][2]);
+  }
+
+  /**
+   * 72. 编辑距离
+   * @param word1
+   * @param word2
+   * @return
+   */
+  public int minDistance(String word1, String word2) {
+    int len1, len2;
+    int [][] dp = new int[(len1 = word1.length()) + 1][(len2 = word2.length()) + 1];
+    for (int i = 0; i <= len1; i++) {
+      dp[i][0] = i;
+    }
+    for (int i = 0; i <= len2; i++) {
+      dp[0][i] = i;
+    }
+    for (int i = 1; i <= len1; i++) {
+      for (int j = 1; j <= len2; j++) {
+        if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+          dp[i][j] = Math.min(dp[i - 1][j - 1], Math.min(dp[i][j - 1], dp[i - 1][j]) + 1);
+        } else {
+          dp[i][j] = Math.min(dp[i - 1][j - 1], Math.min(dp[i][j - 1], dp[i - 1][j])) + 1;
+        }
+      }
+
+    }
+    return dp[len1][len2];
   }
 }

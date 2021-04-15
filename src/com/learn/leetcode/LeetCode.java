@@ -1909,6 +1909,36 @@ public class LeetCode {
   }
 
   /**
+   * 200. 岛屿数量
+   * @param grid
+   * @return
+   */
+  public int numIslands(char[][] grid) {
+    int m, n, count = 0;
+    for (int i = 0; i < (m = grid.length); i++) {
+      for (int j = 0; j < (n = grid[0].length); j++) {
+        if (grid[i][j] == '0') {
+          continue;
+        }
+        dfsSearch(grid, m, n, i, j);
+        count++;
+      }
+    }
+    return count;
+  }
+
+  private void dfsSearch(char[][] grid, int m, int n, int cm, int cn) {
+    if (cm < 0 || cn < 0 || cm >= m || cn >= n || grid[cm][cn] == '0') {
+      return;
+    }
+    grid[cm][cn] = '0';
+    dfsSearch(grid, m, n, cm, cn + 1);
+    dfsSearch(grid, m, n, cm, cn - 1);
+    dfsSearch(grid, m, n, cm + 1, cn);
+    dfsSearch(grid, m, n, cm - 1, cn);
+  }
+
+  /**
    * LRU 缓存机制
    */
   static class LRUCache {
