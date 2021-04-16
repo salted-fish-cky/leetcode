@@ -39,7 +39,12 @@ public class LFUCache {
   }
 
   public int get(int key) {
-
+    Node n = find(key, index(key));
+    if (n != null) {
+      afterNodeAccess(n);
+      return n.value;
+    }
+    return -1;
   }
 
   public void put(int key, int value) {
@@ -50,7 +55,7 @@ public class LFUCache {
       if (p.key == key) {
         p.value = value;
       } else {
-        for(;;) {
+        for (; ; ) {
           if ((l = p.next) == null) {
             p.next = createNode(key, value);
             break;
@@ -68,42 +73,56 @@ public class LFUCache {
     }
     if (l != null) {
       afterNodeAccess(l);
+      return;
     }
-    afterNodeInsertion();
+    if (++size > capacity) {
+      afterNodeInsertion();
+    }
   }
 
   private void afterNodeAccess(Node node) {
     node.useCount += 1;
-    Node p;
+    Node p = node, l;
     if (node != tail) {
-      for (;;) {
-
-      }
-
-      if (node.useCount >= node.after.useCount) {
-        if (node == head) {
-          p = head = node.after;
-          head.before = null;
-
-        } else {
-          node.before.after = node.after;
-          node.after.before = node.before;
+      for (; ; ) {
+        if ((l = p.next) == null) {
+          break;
         }
+        if (l.useCount > p.useCount) {
+          break;
+        }
+      }
+      if (p == node) {
+        return;
+      }
+      if (node == head) {
+        head = node.after;
+        head.before = null;
+      } else {
+        node.before.after = node.after;
+        node.after.before = node.before;
+      }
+      if (p == tail) {
         node.before = tail;
         tail.after = node;
         tail = node;
+      } else {
+        node.after = p.after;
+        p.after.before = node;
+        p.after = node;
+        node.before = p;
       }
+
     }
   }
 
   private void afterNodeInsertion() {
-    if (size > capacity) {
-      Node n = head;
-      head = n.after;
-      head.before = null;
-      n.after = null;
-      remove(n);
-    }
+    Node n = head;
+    head = n.after;
+    head.before = null;
+    n.after = null;
+    remove(n);
+
   }
 
   private void remove(Node node) {
@@ -112,7 +131,7 @@ public class LFUCache {
     if (n == node) {
       table[h] = null;
     } else {
-      while((l = n.next) != null) {
+      while ((l = n.next) != null) {
         if (l == node) {
           n.next = l.next;
           l.next = null;
