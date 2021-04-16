@@ -33,21 +33,26 @@ public class LFUCache {
   private Node tail;
 
   public LFUCache(int capacity) {
-    table = new Node[this.capacity = capacity];
+    table = new Node[(this.capacity = capacity) * 2];
   }
 
   public static void main(String[] args) {
-    LFUCache lfuCache = new LFUCache(2);
+    LFUCache lfuCache = new LFUCache(3);
     lfuCache.put(1,1);
     lfuCache.put(2,2);
-    lfuCache.get(1);
     lfuCache.put(3,3);
+    lfuCache.put(4, 4);
+
+    lfuCache.get(4);
+    lfuCache.get(3);
+    lfuCache.get(2);
+    lfuCache.get(1);
+    lfuCache.put(5, 5);
+    lfuCache.get(1);
     lfuCache.get(2);
     lfuCache.get(3);
-    lfuCache.put(4, 4);
-    lfuCache.get(1);
-    lfuCache.get(3);
     lfuCache.get(4);
+    lfuCache.get(5);
   }
 
   public int get(int key) {
@@ -136,6 +141,7 @@ public class LFUCache {
         node.before = tail;
         tail.after = node;
         tail = node;
+        node.after = null;
       } else {
         node.after = p.after;
         p.after.before = node;
