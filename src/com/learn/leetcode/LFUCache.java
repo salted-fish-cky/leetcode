@@ -14,8 +14,6 @@
 
 package com.learn.leetcode;
 
-import org.w3c.dom.Node;
-
 /**
  * Description：
  *
@@ -38,7 +36,24 @@ public class LFUCache {
     table = new Node[this.capacity = capacity];
   }
 
+  public static void main(String[] args) {
+    LFUCache lfuCache = new LFUCache(2);
+    lfuCache.put(1,1);
+    lfuCache.put(2,2);
+    lfuCache.get(1);
+    lfuCache.put(3,3);
+    lfuCache.get(2);
+    lfuCache.get(3);
+    lfuCache.put(4, 4);
+    lfuCache.get(1);
+    lfuCache.get(3);
+    lfuCache.get(4);
+  }
+
   public int get(int key) {
+    if (checkBound()) {
+      return - 1;
+    }
     Node n = find(key, index(key));
     if (n != null) {
       afterNodeAccess(n);
@@ -48,16 +63,20 @@ public class LFUCache {
   }
 
   public void put(int key, int value) {
-    Node node, p = null, l = null;
+    if (checkBound()) {
+      return;
+    }
+    Node node, p, n = null, l = null;
     int h;
-    if ((node = find(key, h = index(key))) != null) {
+    if ((node = table[h = index(key)]) != null) {
       p = node;
       if (p.key == key) {
         p.value = value;
+        l = p;
       } else {
         for (; ; ) {
           if ((l = p.next) == null) {
-            p.next = createNode(key, value);
+            p.next = n = new Node(key, value, null, null, null, 1);
             break;
           }
           if (l.key == key) {
@@ -68,36 +87,47 @@ public class LFUCache {
         }
       }
     } else {
-      node = createNode(key, value);
-      table[h] = node;
+      n = new Node(key, value, null, null, null, 1);
+      table[h] = n;
     }
     if (l != null) {
       afterNodeAccess(l);
       return;
     }
-    if (++size > capacity) {
-      afterNodeInsertion();
-    }
+    size++;
+    afterNodeInsertion(n);
   }
 
+  private boolean checkBound() {
+    return capacity == 0;
+  }
+
+  /**
+   * 对操作的节点进行使用数+1，然后插到大于它的前节点
+   * @param node
+   */
   private void afterNodeAccess(Node node) {
-    node.useCount += 1;
+    int useCount = (node.useCount += 1);
     Node p = node, l;
     if (node != tail) {
-      for (; ; ) {
-        if ((l = p.next) == null) {
+      for (;;) {
+        if ((l = p.after) == null) {
           break;
         }
-        if (l.useCount > p.useCount) {
+        if (useCount < l.useCount) {
           break;
         }
+        p = l;
       }
+      // p等于node说明节点不需要移动
       if (p == node) {
         return;
       }
+      // 把node节点移动到p节点的后面
       if (node == head) {
         head = node.after;
         head.before = null;
+        node.after = null;
       } else {
         node.before.after = node.after;
         node.after.before = node.before;
@@ -116,20 +146,54 @@ public class LFUCache {
     }
   }
 
-  private void afterNodeInsertion() {
-    Node n = head;
-    head = n.after;
-    head.before = null;
-    n.after = null;
-    remove(n);
-
+  private void afterNodeInsertion(Node node) {
+    if (size > capacity) {
+      Node n = head;
+      head = n.after;
+      if (head != null) {
+        head.before = null;
+      }
+      n.after = null;
+      remove(n);
+    }
+    Node p = head, l;
+    int useCount = node.useCount;
+    if (p != null) {
+      if (useCount >= p.useCount) {
+        for (;;) {
+          if ((l = p.after) == null) {
+            break;
+          }
+          if (node.useCount < l.useCount) {
+            break;
+          }
+          p = l;
+        }
+        if (p != tail) {
+          p.after.before = node;
+          node.after = p.after;
+          p.after = node;
+          node.before = p;
+        } else {
+          tail.after = node;
+          node.before = tail;
+          tail = node;
+        }
+      } else {
+        node.after = head;
+        head.before = node;
+        head = node;
+      }
+    } else {
+      head = tail = node;
+    }
   }
 
   private void remove(Node node) {
     int h;
     Node n = table[h = index(node.key)], l;
     if (n == node) {
-      table[h] = null;
+      table[h] = n.next;
     } else {
       while ((l = n.next) != null) {
         if (l == node) {
@@ -140,7 +204,7 @@ public class LFUCache {
         n = l;
       }
     }
-
+    size--;
   }
 
   private int index(int key) {
@@ -157,17 +221,6 @@ public class LFUCache {
       }
     }
     return null;
-  }
-
-  private Node createNode(int key, int value) {
-    Node node = new Node(key, value, null, null, null, 1);
-    if (head == null) {
-      head = tail = node;
-    } else {
-      tail.after = node;
-      node.before = tail;
-      tail = node;
-    }
   }
 
   static class Node {
