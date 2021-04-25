@@ -27,19 +27,17 @@ public class Solution647 {
     if ((len = s.length()) == 0) {
       return 0;
     }
-    int[][] dp = new int[len][len];
-    for (int i = 0; i < len; i++) {
-      dp[i][i] = 1;
-    }
     int sum = 0;
-    for (int i = len - 2; i >= 0; i--) {
-      for (int j = i + 1; j < len; j++) {
-        if (s.charAt(i) == s.charAt(j)) {
-          dp[i][j] = dp[i][j - 1] + 1;
-        } else {
-          dp[i][j] = dp[i + 1][j];
-        }
-        sum += 1;
+    boolean[][] dp = new boolean[len][len];
+    for (int i = 0; i < len; i++) {
+      dp[i][i] = true;
+      sum++;
+    }
+    for (int i = 1; i < len; i++) {
+      for (int j = 0; j < i; j++) {
+        boolean b = s.charAt(i) == s.charAt(j);
+        dp[j][i] = i - j < 2 ? b : dp[j + 1][i - 1] && b;
+        sum = dp[j][i] ? sum + 1 : sum;
       }
     }
     return sum;
