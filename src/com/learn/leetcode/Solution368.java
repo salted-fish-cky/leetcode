@@ -53,6 +53,35 @@ public class Solution368 {
     return dp[index];
   }
 
+  public List<Integer> largestDivisibleSubset2(int[] nums) {
+    int len;
+    quickSort(0, (len = nums.length) - 1, nums);
+    int[] dp = new int[len];
+    dp[0] = 1;
+    int max = 1, maxIndex = 0;
+    for (int i = 1; i < len; i++) {
+      for (int j = 0; j < i; j++) {
+        if (nums[i] % nums[j] == 0) {
+          dp[i] = Math.max(dp[i], dp[j]);
+        }
+      }
+      dp[i]++;
+      if (dp[i] > max) {
+        max = dp[i];
+        maxIndex = i;
+      }
+    }
+    List<Integer> list = new ArrayList<>(max);
+    for (int i = maxIndex; i >= 0; i--) {
+      if (nums[maxIndex] % nums[i] == 0 && dp[i] == max) {
+        list.add(nums[i]);
+        max--;
+        maxIndex = i;
+      }
+    }
+    return list;
+  }
+
   private void quickSort(int start, int end, int[] nums) {
     if (start < end) {
       int l = start, r = end;
