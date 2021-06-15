@@ -54,4 +54,27 @@ public class Solution416 {
     }
     return dp[n - 1][target];
   }
+
+  public boolean canPartition2(int[] nums) {
+    int n, m;
+    if ((n = nums.length) < 2) {
+      return false;
+    }
+    int sum = 0;
+    for (int i = 0; i < n; i++) {
+      sum += nums[i];
+    }
+    if ((sum & 1) == 1) {
+      return false;
+    }
+    int[][] dp = new int[n + 1][(m = sum / 2) + 1];
+    for (int i = 1; i <= n; i++) {
+      for (int j = 1; j <= m; j++) {
+        int num =  nums[i - 1];
+        dp[i][j] = j < num ? dp[i - 1][j] :
+                Math.max(dp[i - 1][j], dp[i - 1][j - num] + num);
+      }
+    }
+    return m - dp[n][m] == 0;
+  }
 }
