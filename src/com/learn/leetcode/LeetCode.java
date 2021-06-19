@@ -1690,20 +1690,6 @@ public class LeetCode {
     return result;
   }
 
-  /**
-   * 122. 买卖股票的最佳时机 II
-   * @param prices
-   * @return
-   */
-  public int maxProfit(int[] prices) {
-    int result = 0, len;
-    for (int i = 0; i < (len = prices.length); i++) {
-      if (i != len - 1 && prices[i] < prices[i + 1]) {
-        result += prices[i + 1] - prices[i];
-      }
-    }
-    return result;
-  }
 
   /**
    * 104. 二叉树的最大深度

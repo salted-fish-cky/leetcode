@@ -67,27 +67,26 @@ public class DynamicProgram {
 
   /**
    * 300. 最长递增子序列 dp
-   * @param s
+   * @param
    * @return
    */
   public int lengthOfLIS(int[] nums) {
-    int len = 0;
-    int[] dp = new int[len = nums.length];
+    int len = 0, max = 0;
+    if ((len = nums.length) <= 1) {
+      return len;
+    }
+    int[] dp = new int[len];
     for (int i = 0; i < len; i++) {
       dp[i] = 1;
 
     }
-    int max = 1;
     for (int i = 1; i < len; i++) {
-      for (int j = 0; j <= i; j++) {
+      for (int j = 0; j < i; j++) {
         if (nums[j] < nums[i]) {
-          dp[i] = (max = Math.max(dp[j], max)) + 1;
+          dp[i] = (Math.max(dp[j] + 1, dp[i]));
         }
       }
-      max = 1;
-    }
-    for (int i = 0; i < len; i++) {
-      max = Math.max(max, dp[i]);
+      max = Math.max(dp[i], max);
     }
     return max;
   }
@@ -372,5 +371,20 @@ public class DynamicProgram {
 
     }
     return dp[len1][len2];
+  }
+
+  /**
+   * 122. 买卖股票的最佳时机 II
+   * @param prices
+   * @return
+   */
+  public int maxProfit3(int[] prices) {
+    int result = 0, len;
+    for (int i = 0; i < (len = prices.length); i++) {
+      if (i != len - 1 && prices[i] < prices[i + 1]) {
+        result += prices[i + 1] - prices[i];
+      }
+    }
+    return result;
   }
 }
