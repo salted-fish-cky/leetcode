@@ -15,18 +15,21 @@
 package com.learn.leetcode;
 
 /**
- * Description：
+ * Description： 剑指 Offer 42. 连续子数组的最大和
  *
  * @author caokeyu
- * @since 2021/5/27
+ * @since 2021/6/16
  */
-public class ListNode {
+public class SolutionOffer42 {
 
-  int val;
-  ListNode next;
-  ListNode(int x) {
-      val = x;
-      next = null;
+  public int maxSubArray(int[] nums) {
+    int len;
+    int[] dp = new int[(len = nums.length) + 1];
+    int res = Integer.MIN_VALUE;
+    for (int i = 1; i <= len; i++) {
+      dp[i] = nums[i - 1] > dp[i - 1] + nums[i - 1] ? nums[i - 1] : dp[i - 1] + nums[i - 1];
+      res = Math.max(res, dp[i]);
+    }
+    return res;
   }
-  ListNode(int val, ListNode next) { this.val = val; this.next = next; }
 }
